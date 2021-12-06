@@ -1,0 +1,25 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: permitteringsportal-api
+  namespace: permittering-og-nedbemanning
+  labels:
+    team: permittering-og-nedbemanning
+spec:
+  image: {{ version }}
+  port: 8080
+  ingresses:
+    - https://permitteringsportal-api.dev.intern.nav.no
+  liveness:
+    path: /internal/isAlive
+  readiness:
+    path: /internal/isReady
+#  gcp:
+#    sqlInstances:
+#      - name: permitteringsportal-api
+#        type: POSTGRES_12
+#        databases:
+#          - name: permitteringsportal-api-db
+      #      envVarPrefix: DATABASE
+#  kafka:
+#    pool: nav-dev
