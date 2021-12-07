@@ -9,7 +9,9 @@ spec:
   image: {{ version }}
   port: 8080
   ingresses:
-    - https://permitteringsportal-api.dev.intern.nav.no
+  {{#each ingress as |url|}}
+      - {{url}}
+  {{/each}}
   liveness:
     path: /internal/isAlive
   readiness:
