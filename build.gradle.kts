@@ -11,7 +11,10 @@ repositories {
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.google.guava:guava:30.1.1-jre")
+
+    implementation("io.ktor:ktor-server-core:1.6.4")
+    implementation("io.ktor:ktor-server-netty:1.6.4")
+    implementation("ch.qos.logback:logback-classic:1.2.5")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")

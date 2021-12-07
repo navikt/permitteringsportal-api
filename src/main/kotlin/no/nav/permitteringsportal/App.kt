@@ -4,12 +4,13 @@
 package no.nav.permitteringsportal
 
 class App {
-    val greeting: String
-        get() {
-            return "Hello World!"
-        }
+    fun start() {
+        println("starter app")
+    }
+
 }
 
 fun main() {
-    println(App().greeting)
+    App().start()
+
 }
