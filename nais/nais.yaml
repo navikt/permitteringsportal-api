@@ -16,12 +16,12 @@ spec:
     path: /internal/isAlive
   readiness:
     path: /internal/isReady
-#  gcp:
-#    sqlInstances:
-#      - name: permitteringsportal-api
-#        type: POSTGRES_12
-#        databases:
-#          - name: permitteringsportal-api-db
-      #      envVarPrefix: DATABASE
+  gcp:
+    sqlInstances:
+      - name: permitteringsportal-api
+        type: POSTGRES_12
+        databases:
+          - name: permitteringsportal-api-db
+            envVarPrefix: DATABASE
 #  kafka:
 #    pool: nav-dev
