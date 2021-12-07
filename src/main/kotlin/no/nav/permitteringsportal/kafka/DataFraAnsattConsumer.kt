@@ -9,7 +9,7 @@ import org.apache.kafka.common.errors.WakeupException
 import java.io.Closeable
 import java.time.Duration
 
-class DataFraAnsatt(
+class DataFraAnsattConsumer(
         private val consumer: Consumer<String, String>,
 ) : Closeable {
 

@@ -9,27 +9,42 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import no.nav.permitteringsportal.kafka.consumerConfig
 import no.nav.permitteringsportal.utils.log
+import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
+import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import java.io.Closeable
+import kotlin.concurrent.thread
 
-class App {
-
+class App(private val consumer: Consumer<String, String>): Closeable {
+    private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer)
     fun start() {
         log.info("starter app")
         embeddedServer(Netty, port = 8080) {
             routing {
                 get("/internal/isAlive") {
-                    call.respond(HttpStatusCode.OK,"ok")
+                    call.respond(HttpStatusCode.OK, "ok")
                 }
                 get("/internal/isReady") {
-                    call.respond(HttpStatusCode.OK,"ok")
+                    call.respond(HttpStatusCode.OK, "ok")
                 }
             }
         }.start(wait = true)
+        thread {
+            dataFraAnsattConsumer.start();
+        }
+    }
+    override fun close() {
+        dataFraAnsattConsumer.close()
     }
 
 }
 
 fun main() {
-    App().start()
-
+    val consumer: Consumer<String, String> = KafkaConsumer<String, String>(consumerConfig())
+    App(consumer).start()
 }
+
+
+
