@@ -11,6 +11,7 @@ repositories {
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("net.logstash.logback:logstash-logback-encoder:6.6")
 
     implementation("io.ktor:ktor-server-core:1.6.4")
     implementation("io.ktor:ktor-server-netty:1.6.4")
