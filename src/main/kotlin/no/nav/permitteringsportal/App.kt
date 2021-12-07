@@ -9,11 +9,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import no.nav.permitteringsportal.utils.log
 
 class App {
 
     fun start() {
-        println("starter app")
+        log.info("starter app")
         embeddedServer(Netty, port = 8080) {
             routing {
                 get("/internal/isAlive") {
