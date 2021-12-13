@@ -7,7 +7,10 @@ fun main() {
 
 // Brukes for å kjøre appen i tester
 fun startLokalApp() {
-    App().start()
+
+    val lokalDatabaseConfig = LokalDatabaseConfig()
+
+    App(
+        dataSource = lokalDatabaseConfig.dataSource
+    ).start()
 }
-
-
