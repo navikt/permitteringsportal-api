@@ -15,12 +15,4 @@ class LokalDatabaseConfig {
             validate()
         }
     )
-
-    init {
-        val flyway = Flyway.configure()
-            .locations("db.migration")
-            .dataSource(dataSource)
-            .load()
-        flyway.migrate()
-    }
 }

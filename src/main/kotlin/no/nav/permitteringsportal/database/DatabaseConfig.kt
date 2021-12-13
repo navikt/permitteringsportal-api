@@ -2,7 +2,6 @@ package no.nav.permitteringsportal.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.flywaydb.core.Flyway
 
 class DatabaseConfig {
 
@@ -22,13 +21,4 @@ class DatabaseConfig {
             validate()
         }
     )
-
-    init {
-        val flyway = Flyway.configure()
-            .locations("db.migration")
-            .dataSource(dataSource)
-            .load()
-        flyway.migrate()
-    }
-
 }

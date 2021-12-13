@@ -9,6 +9,7 @@ import io.ktor.server.netty.*
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.DatabaseConfig
 import no.nav.permitteringsportal.database.Repository
+import no.nav.permitteringsportal.database.runFlywayMigrations
 import no.nav.permitteringsportal.utils.Cluster
 import no.nav.permitteringsportal.utils.log
 import javax.sql.DataSource
@@ -18,7 +19,10 @@ class App(
 ) {
 
     fun start() {
+        runFlywayMigrations(dataSource)
+
         val repository = Repository(dataSource)
+
 
         embeddedServer(Netty, port = 8080) {
             routing {
