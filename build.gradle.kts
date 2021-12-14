@@ -21,8 +21,8 @@ dependencies {
     implementation("org.flywaydb:flyway-core:8.0.3")
     implementation("com.zaxxer:HikariCP:5.0.0")
     implementation("com.github.seratch:kotliquery:1.6.1")
-    implementation("com.h2database:h2:1.4.200")
 
+    testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
