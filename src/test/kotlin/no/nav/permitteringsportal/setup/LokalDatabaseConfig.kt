@@ -1,8 +1,7 @@
-package no.nav.permitteringsportal
+package no.nav.permitteringsportal.setup
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.flywaydb.core.Flyway
 
 class LokalDatabaseConfig {
 
