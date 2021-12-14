@@ -1,6 +1,6 @@
-package no.nav.permitteringsportal
+package no.nav.oppsett
 
-import no.nav.oppsett.mockConsumer
+import no.nav.permitteringsportal.App
 import org.apache.kafka.clients.consumer.Consumer
 
 // Brukes for å kjøre appen lokalt
@@ -16,4 +16,3 @@ fun startLokalApp(
     app.start()
     return app
 }
-
