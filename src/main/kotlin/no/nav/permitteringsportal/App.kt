@@ -21,25 +21,17 @@ import java.io.Closeable
 import javax.sql.DataSource
 
 class App(
-    private val dataSource: DataSource
+    private val dataSource: DataSource,
+    private val issuerConfig: IssuerConfig
+
 ): Closeable {
 
     private val repository = Repository(dataSource)
 
     private val server = embeddedServer(Netty, port = 8080) {
 
-        // TODO: Gjøre det slik eller få det til å funke med application.conf?
-        // TODO: Flytt til LokalApp.kt
-        val issuer = "default"
-        val config = IssuerConfig(
-            name = issuer,
-            discoveryUrl = "http://localhost:18300/$issuer/.well-known/openid-configuration",
-            acceptedAudience = listOf("default")
-        )
-        val tokenSupportConfig = TokenSupportConfig(config)
-
         install(Authentication) {
-            tokenValidationSupport(config = tokenSupportConfig)
+            tokenValidationSupport(config = TokenSupportConfig(issuerConfig))
         }
 
         routing {
@@ -66,8 +58,15 @@ fun main() {
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
     val databaseConfig = DatabaseConfig()
+    val issuer = "TODO"
+    val issuerConfig = IssuerConfig(
+        name = issuer,
+        discoveryUrl = "TODO",
+        acceptedAudience = listOf("TODO")
+    )
 
     App(
-        dataSource = databaseConfig.dataSource
+        dataSource = databaseConfig.dataSource,
+        issuerConfig = issuerConfig
     ).start()
 }
