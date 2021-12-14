@@ -37,21 +37,21 @@ jobs:
           push: true
           tags: ${{ env.docker_image }}
 
-  deploy-to-dev:
-    name: Deploy to dev
-    needs: test
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/integrer-mot-kafka-permitteringsskjema'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_KEY_TEAM }}
-          CLUSTER: dev-gcp
-          RESOURCE: nais/nais.yaml
-          VAR: version=${{ env.docker_image }}
-          VARS: nais/nais-dev.json
-          PRINT_PAYLOAD: true
+#  deploy-to-dev:
+#    name: Deploy to dev
+#    needs: test
+#    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/integrer-mot-kafka-permitteringsskjema'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - uses: nais/deploy/actions/deploy@v1
+#        env:
+#          APIKEY: ${{ secrets.NAIS_DEPLOY_KEY_TEAM }}
+#          CLUSTER: dev-gcp
+#          RESOURCE: nais/nais.yaml
+#          VAR: version=${{ env.docker_image }}
+#          VARS: nais/nais-dev.json
+#          PRINT_PAYLOAD: true
 
 #  deploy-to-prod:
 #    name: Deploy to prod
