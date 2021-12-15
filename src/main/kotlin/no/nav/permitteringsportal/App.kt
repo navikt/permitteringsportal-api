@@ -8,6 +8,7 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import no.nav.permitteringsportal.database.DatabaseConfig
+import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.database.runFlywayMigrations
 import no.nav.permitteringsportal.utils.Cluster
@@ -55,7 +56,8 @@ class App(
 fun main() {
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
-    val databaseConfig = DatabaseConfig()
+    // TODO: Koble mot PostgreSQL i miljø når vi har landa litt mer detaljer på schema
+    val databaseConfig = LokalDatabaseConfig() // DatabaseConfig()
 
     val issuerConfig = IssuerConfig(
         name = "arbeidsgiver",

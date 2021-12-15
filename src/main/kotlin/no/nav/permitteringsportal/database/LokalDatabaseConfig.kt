@@ -1,4 +1,4 @@
-package no.nav.permitteringsportal.setup
+package no.nav.permitteringsportal.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource

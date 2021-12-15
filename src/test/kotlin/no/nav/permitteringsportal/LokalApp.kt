@@ -1,6 +1,6 @@
 package no.nav.permitteringsportal
 
-import no.nav.permitteringsportal.setup.LokalDatabaseConfig
+import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.security.mock.oauth2.MockOAuth2Server
 
