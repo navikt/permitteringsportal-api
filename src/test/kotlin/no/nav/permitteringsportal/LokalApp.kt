@@ -1,8 +1,8 @@
 package no.nav.permitteringsportal
 
 import no.nav.permitteringsportal.setup.LokalDatabaseConfig
+import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.security.token.support.ktor.IssuerConfig
 
 // Brukes for å kjøre appen lokalt
 fun main() {
@@ -15,17 +15,9 @@ fun startLokalApp(
 
     mockOAuth2Server.start(port = 18300)
 
-    val issuer = "default"
-    val acceptedAudience = "default"
-    val issuerConfig = IssuerConfig(
-        name = "arbeidsgiver",
-        discoveryUrl = mockOAuth2Server.wellKnownUrl(issuer).toString(),
-        acceptedAudience = listOf(acceptedAudience)
-    )
-
     val app = App(
         dataSource = LokalDatabaseConfig().dataSource,
-        issuerConfig = issuerConfig
+        issuerConfig = issuerConfig(mockOAuth2Server)
     )
 
     app.start()
