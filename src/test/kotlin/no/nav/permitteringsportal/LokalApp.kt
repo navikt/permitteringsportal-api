@@ -9,16 +9,18 @@ fun main() {
     startLokalApp()
 }
 
-// Brukes for å kjøre appen i tester
-fun startLokalApp(): App {
-    val mockOAuth2Server = MockOAuth2Server()
+fun startLokalApp(
+    mockOAuth2Server: MockOAuth2Server = MockOAuth2Server()
+): App {
+
     mockOAuth2Server.start(port = 18300)
 
     val issuer = "default"
+    val acceptedAudience = "default"
     val issuerConfig = IssuerConfig(
-        name = issuer,
-        discoveryUrl = "http://localhost:18300/$issuer/.well-known/openid-configuration",
-        acceptedAudience = listOf("default")
+        name = "arbeidsgiver",
+        discoveryUrl = mockOAuth2Server.wellKnownUrl(issuer).toString(),
+        acceptedAudience = listOf(acceptedAudience)
     )
 
     val app = App(

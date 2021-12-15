@@ -3,10 +3,10 @@ package no.nav.permitteringsportal.setup
 import com.github.kittinunf.fuel.core.Request
 import no.nav.security.mock.oauth2.MockOAuth2Server
 
-fun Request.medArbeidsgiverToken(): Request {
-    return this.header("authorization", "Bearer $token")
+fun Request.medArbeidsgiverToken(mockOAuth2Server: MockOAuth2Server): Request {
+    return this.header("authorization", "Bearer ${token(mockOAuth2Server)}")
 }
 
-// TODO: Dette funker ikke siden man bruker forskjellig instans enn den som starter i LokalApp.
-//  Issuers blir derfor feil? (portnr. til serveren blir inkludert i issuer)
-private val token = MockOAuth2Server().issueToken().serialize()
+private fun token(mockOAuth2Server: MockOAuth2Server): String {
+    return mockOAuth2Server.issueToken().serialize()
+}
