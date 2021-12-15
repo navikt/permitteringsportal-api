@@ -3,6 +3,7 @@ package no.nav.permitteringsportal.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 
+// TODO: Flytt til test-sources når vi er kobla mot PostgreSQL i miljø
 class LokalDatabaseConfig {
 
     val dataSource: HikariDataSource = HikariDataSource(

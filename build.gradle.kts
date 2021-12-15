@@ -27,6 +27,7 @@ dependencies {
 
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
 
+    // TODO: Endre til testImplementation når vi er kobla mot PostgreSQL i miljø
     implementation("com.h2database:h2:1.4.200")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
