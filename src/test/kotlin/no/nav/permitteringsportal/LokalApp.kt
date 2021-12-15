@@ -1,16 +1,26 @@
 package no.nav.permitteringsportal
 
+import no.nav.permitteringsportal.setup.LokalDatabaseConfig
+import no.nav.permitteringsportal.setup.issuerConfig
+import no.nav.security.mock.oauth2.MockOAuth2Server
+
 // Brukes for å kjøre appen lokalt
 fun main() {
     startLokalApp()
 }
 
-// Brukes for å kjøre appen i tester
-fun startLokalApp() {
+fun startLokalApp(
+    mockOAuth2Server: MockOAuth2Server = MockOAuth2Server()
+): App {
 
-    val lokalDatabaseConfig = LokalDatabaseConfig()
+    mockOAuth2Server.start(port = 18300)
 
-    App(
-        dataSource = lokalDatabaseConfig.dataSource
-    ).start()
+    val app = App(
+        dataSource = LokalDatabaseConfig().dataSource,
+        issuerConfig = issuerConfig(mockOAuth2Server)
+    )
+
+    app.start()
+
+    return app
 }
