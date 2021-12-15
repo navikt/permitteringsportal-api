@@ -23,5 +23,11 @@ spec:
         databases:
           - name: permitteringsportal-api-db
             envVarPrefix: DATABASE
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: permitteringsportal
 #  kafka:
 #    pool: nav-dev

@@ -2,13 +2,11 @@ package no.nav.permitteringsportal
 
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.util.*
 import no.nav.permitteringsportal.database.DatabaseConfig
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.database.runFlywayMigrations
@@ -58,11 +56,11 @@ fun main() {
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
     val databaseConfig = DatabaseConfig()
-    val issuer = "TODO"
+
     val issuerConfig = IssuerConfig(
-        name = issuer,
-        discoveryUrl = "TODO",
-        acceptedAudience = listOf("TODO")
+        name = "arbeidsgiver",
+        discoveryUrl = System.getenv("TOKEN_X_WELL_KNOWN_URL"),
+        acceptedAudience = listOf(System.getenv("TOKEN_X_CLIENT_ID"))
     )
 
     App(
