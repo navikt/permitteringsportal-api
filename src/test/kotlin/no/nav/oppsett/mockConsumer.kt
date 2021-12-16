@@ -1,6 +1,5 @@
 package no.nav.oppsett
 
-import kotlinx.coroutines.delay
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer

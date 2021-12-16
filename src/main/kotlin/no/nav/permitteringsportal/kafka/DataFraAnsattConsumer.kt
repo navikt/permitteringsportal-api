@@ -2,7 +2,7 @@ package no.nav.permitteringsvarsel.notifikasjon.kafka
 
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
 import no.nav.permitteringsportal.utils.log
-import no.nav.permitteringsportal.utils.log
+import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.errors.WakeupException
@@ -10,7 +10,7 @@ import java.io.Closeable
 import java.time.Duration
 
 class DataFraAnsattConsumer(
-        private val consumer: Consumer<String, String>,
+        private val consumer: Consumer<String, String>
 ) : Closeable {
 
     fun start() {

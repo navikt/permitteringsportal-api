@@ -10,14 +10,17 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import no.nav.permitteringsportal.kafka.consumerConfig
+import no.nav.permitteringsportal.kafka.producerConfig
 import no.nav.permitteringsportal.utils.log
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.clients.producer.KafkaProducer
+import org.apache.kafka.clients.producer.Producer
 import java.io.Closeable
 import kotlin.concurrent.thread
 
-class App(private val consumer: Consumer<String, String>): Closeable {
+class App(private val consumer: Consumer<String, String>,private val producer: Producer<String, String> ): Closeable {
     private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer)
     fun start() {
         log.info("starter app")
@@ -43,7 +46,8 @@ class App(private val consumer: Consumer<String, String>): Closeable {
 
 fun main() {
     val consumer: Consumer<String, String> = KafkaConsumer<String, String>(consumerConfig())
-    App(consumer).start()
+    val producer: Producer<String, String> = KafkaProducer<String, String>(producerConfig())
+    App(consumer, producer).start()
 }
 
 
