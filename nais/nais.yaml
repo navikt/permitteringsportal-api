@@ -9,17 +9,25 @@ spec:
   image: {{ version }}
   port: 8080
   ingresses:
-    - https://permitteringsportal-api.dev.intern.nav.no
+  {{#each ingress as |url|}}
+      - {{url}}
+  {{/each}}
   liveness:
     path: /internal/isAlive
   readiness:
     path: /internal/isReady
-#  gcp:
-#    sqlInstances:
-#      - name: permitteringsportal-api
-#        type: POSTGRES_12
-#        databases:
-#          - name: permitteringsportal-api-db
-      #      envVarPrefix: DATABASE
+  gcp:
+    sqlInstances:
+      - name: permitteringsportal-api
+        type: POSTGRES_12
+        databases:
+          - name: permitteringsportal-api-db
+            envVarPrefix: DATABASE
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: permitteringsportal
 #  kafka:
 #    pool: nav-dev

@@ -1,5 +1,5 @@
 {
   "ingress": [
-    "https://arbeidsgiver.dev.intern.nav.no/permitteringsportal-api"
+    "https://permitteringsportal-api.dev.intern.nav.no"
   ]
 }
