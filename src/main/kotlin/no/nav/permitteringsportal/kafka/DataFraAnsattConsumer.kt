@@ -1,5 +1,6 @@
 package no.nav.permitteringsvarsel.notifikasjon.kafka
 
+import no.nav.permitteringsportal.DataFraAnsatt
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
 import no.nav.permitteringsportal.utils.log
 import org.apache.kafka.clients.producer.Producer
@@ -10,7 +11,7 @@ import java.io.Closeable
 import java.time.Duration
 
 class DataFraAnsattConsumer(
-        private val consumer: Consumer<String, String>
+        private val consumer: Consumer<String, DataFraAnsatt>
 ) : Closeable {
 
     fun start() {
@@ -18,7 +19,7 @@ class DataFraAnsattConsumer(
             consumer.subscribe(listOf(permitteringsmeldingtopic))
             log.info("Starter å konsumere topic ${permitteringsmeldingtopic} med groupId ${consumer.groupMetadata().groupId()}")
             while (true) {
-                val records: ConsumerRecords<String, String> = consumer.poll(Duration.ofSeconds(5))
+                val records: ConsumerRecords<String, DataFraAnsatt> = consumer.poll(Duration.ofSeconds(5))
                 if (records.count() == 0) continue
                 consumer.commitSync()
 

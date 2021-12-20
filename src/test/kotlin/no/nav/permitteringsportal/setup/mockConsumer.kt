@@ -1,6 +1,8 @@
 package no.nav.oppsett
 
+import no.nav.permitteringsportal.DataFraAnsatt
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
+import no.nav.permitteringsportal.setup.dataFraAnsatt
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
@@ -9,10 +11,10 @@ import java.util.*
 
 val topic = TopicPartition(permitteringsmeldingtopic, 0)
 
-fun mockConsumer() = MockConsumer<String, String>(OffsetResetStrategy.EARLIEST).apply {
+fun mockConsumer() = MockConsumer<String, DataFraAnsatt>(OffsetResetStrategy.EARLIEST).apply {
     schedulePollTask {
         rebalance(listOf(topic))
         updateBeginningOffsets(mapOf(Pair(topic, 0)))
-        addRecord(ConsumerRecord(permitteringsmeldingtopic, 0, 0, UUID.randomUUID().toString(), "lokal melding"))
+        addRecord(ConsumerRecord(permitteringsmeldingtopic, 0, 0, UUID.randomUUID().toString(), dataFraAnsatt))
     }
 }

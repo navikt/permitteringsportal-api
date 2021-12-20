@@ -29,7 +29,7 @@ import javax.sql.DataSource
 class App(
     private val dataSource: DataSource,
     private val issuerConfig: IssuerConfig,
-    private val consumer: Consumer<String, String>,
+    private val consumer: Consumer<String, DataFraAnsatt>,
     private val producer: Producer<String, String>
 
 ): Closeable {
@@ -68,7 +68,7 @@ class App(
 }
 
 fun main() {
-    val consumer: Consumer<String, String> = KafkaConsumer<String, String>(consumerConfig())
+    val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     val producer: Producer<String, String> = KafkaProducer<String, String>(producerConfig())
 
     log("main").info("Starter app i cluster: ${Cluster.current}")

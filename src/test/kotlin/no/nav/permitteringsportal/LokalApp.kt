@@ -16,7 +16,7 @@ fun main() {
 // Brukes for å kjøre appen i tester
 fun startLokalApp(
     mockOAuth2Server: MockOAuth2Server = MockOAuth2Server(),
-    consumer: Consumer<String, String> = mockConsumer(),
+    consumer: Consumer<String, DataFraAnsatt> = mockConsumer(),
     producer: Producer<String, String> = mockProducer()
 ): App {
     mockOAuth2Server.start(port = 18300)
