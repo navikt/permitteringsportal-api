@@ -20,6 +20,7 @@ import kotlin.concurrent.thread
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.database.runFlywayMigrations
+import no.nav.permitteringsportal.kafka.DagpengeMeldingService
 import no.nav.permitteringsportal.utils.Cluster
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
@@ -30,7 +31,8 @@ class App(
     private val dataSource: DataSource,
     private val issuerConfig: IssuerConfig,
     private val consumer: Consumer<String, DataFraAnsatt>,
-    private val producer: Producer<String, String>
+    private val producer: Producer<String, String>,
+    private val dagpengeMeldingService: DagpengeMeldingService
 
 ): Closeable {
 
@@ -70,6 +72,8 @@ class App(
 fun main() {
     val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     val producer: Producer<String, String> = KafkaProducer<String, String>(producerConfig())
+    val dagpengeMeldingService: DagpengeMeldingService = DagpengeMeldingService(consumer)
+
 
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
@@ -86,7 +90,8 @@ fun main() {
         dataSource = databaseConfig.dataSource,
         issuerConfig = issuerConfig,
         consumer,
-        producer
+        producer,
+        dagpengeMeldingService
     ).start()
 }
 

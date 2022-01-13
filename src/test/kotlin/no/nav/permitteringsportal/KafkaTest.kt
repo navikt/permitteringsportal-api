@@ -1,6 +1,7 @@
 package no.nav.permitteringsportal
 
 import io.mockk.InternalPlatformDsl.toStr
+import io.mockk.verify
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.setup.dataFraAnsatt
@@ -9,7 +10,7 @@ import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.junit.Test
 
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
-import no.nav.permitteringsportal.utils.log
+
 import org.apache.kafka.common.TopicPartition
 
 val svarTopic = TopicPartition(permitteringsmeldingtopic, 0)
@@ -26,9 +27,13 @@ class KafkaTest {
             val forventetData = listOf(
                 dataFraAnsatt
             )
-         log("logg " + mockConsumer.subscribe(listOf(svarTopic.topic())).toStr())
+         verify(timeout = 3000) {
+             mockOAuth2Server.(forventedeStillinger, hentIndeksNavn(indeksversjon))
+         }
+
+         //log("logg " + mockConsumer.subscribe(listOf(svarTopic.topic())).toStr())
          val hei = mockConsumer.subscribe(listOf(svarTopic.topic())).toStr()
 
-            assert(hei.equals(forventetData))
+            assert(hei.equals(forventetData[0].toString()))
         }
 }}
