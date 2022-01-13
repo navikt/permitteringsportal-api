@@ -25,13 +25,14 @@ import no.nav.permitteringsportal.utils.Cluster
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
 import no.nav.security.token.support.ktor.tokenValidationSupport
+import java.util.*
 import javax.sql.DataSource
 
 class App(
     private val dataSource: DataSource,
     private val issuerConfig: IssuerConfig,
     private val consumer: Consumer<String, DataFraAnsatt>,
-    private val producer: Producer<String, String>,
+    private val producer: Producer<String, DataFraAnsatt>,
     private val dagpengeMeldingService: DagpengeMeldingService
 
 ): Closeable {
@@ -71,8 +72,15 @@ class App(
 
 fun main() {
     val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
-    val producer: Producer<String, String> = KafkaProducer<String, String>(producerConfig())
-    val dagpengeMeldingService: DagpengeMeldingService = DagpengeMeldingService(consumer)
+    val producer: Producer<String, DataFraAnsatt> = KafkaProducer<String, DataFraAnsatt>(producerConfig())
+
+    //har ikke implementert database og mottak av foresporsler enda.
+    val uuid: UUID = UUID.randomUUID()
+    val dataFraAnsatt = DataFraAnsatt(
+        uuid, "hello"
+    )
+    //dette er mock
+    val dagpengeMeldingService = DagpengeMeldingService(producer, listOf( dataFraAnsatt))
 
 
     log("main").info("Starter app i cluster: ${Cluster.current}")

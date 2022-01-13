@@ -20,7 +20,7 @@ class KafkaTest {
         val mockProducer = mockProducer()
         val mockConsumer = mockConsumer()
         val mockOAuth2Server = MockOAuth2Server()
-
+    /*
      startLokalApp(mockOAuth2Server, mockConsumer, mockProducer).use {
             mottaKafkamelding(mockConsumer, dataFraAnsatt)
 
@@ -36,4 +36,6 @@ class KafkaTest {
 
             assert(hei.equals(forventetData[0].toString()))
         }
+
+     */
 }}
