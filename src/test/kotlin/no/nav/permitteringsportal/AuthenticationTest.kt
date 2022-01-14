@@ -1,17 +1,29 @@
 package no.nav.permitteringsportal
 
 import com.github.kittinunf.fuel.Fuel
+import no.nav.oppsett.mockConsumer
+import no.nav.oppsett.mockProducer
+import no.nav.permitteringsportal.kafka.DagpengeMeldingService
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import java.util.*
 
 class AuthenticationTest {
 
     companion object {
+
+        val mockProducer = mockProducer()
+        val mockConsumer = mockConsumer()
+        val uuid: UUID = UUID.randomUUID()
+        val dataFraAnsatt = DataFraAnsatt(
+            uuid, "hello"
+        )
+        val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
         private val mockOAuth2Server = MockOAuth2Server()
         init {
-            startLokalApp(mockOAuth2Server)
+            startLokalApp(mockOAuth2Server, mockConsumer, mockProducer,service )
         }
     }
 
