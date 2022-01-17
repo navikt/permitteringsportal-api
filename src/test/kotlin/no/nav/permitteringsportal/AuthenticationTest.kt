@@ -4,6 +4,7 @@ import com.github.kittinunf.fuel.Fuel
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.kafka.DagpengeMeldingService
+import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
@@ -22,8 +23,9 @@ class AuthenticationTest {
         )
         val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
         private val mockOAuth2Server = MockOAuth2Server()
+        private val dataSource = LokalDatabaseConfig().dataSource
         init {
-            startLokalApp(mockOAuth2Server, mockConsumer, mockProducer,service )
+            startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,service )
         }
     }
 

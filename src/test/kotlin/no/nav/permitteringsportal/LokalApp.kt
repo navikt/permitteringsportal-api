@@ -1,5 +1,6 @@
 package no.nav.permitteringsportal
 
+import com.zaxxer.hikari.HikariDataSource
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import org.apache.kafka.clients.consumer.Consumer
@@ -22,11 +23,11 @@ val dataFraAnsatt = DataFraAnsatt(
 
 // Brukes for å kjøre appen i tester
 fun startLokalApp(
+    dataSource: HikariDataSource = LokalDatabaseConfig().dataSource,
     mockOAuth2Server: MockOAuth2Server = MockOAuth2Server(),
     consumer: Consumer<String, DataFraAnsatt> = mockConsumer(),
     producer: Producer<String, DataFraAnsatt> = mockProducer(),
     dagpengeMeldingService: DagpengeMeldingService = DagpengeMeldingService(producer, listOf(dataFraAnsatt))
-
 ): App {
     mockOAuth2Server.start(port = 18300)
     val app = App(dataSource = LokalDatabaseConfig().dataSource,

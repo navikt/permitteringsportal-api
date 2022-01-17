@@ -8,29 +8,85 @@ import javax.sql.DataSource
 
 class Repository(private val dataSource: DataSource) {
 
-    fun insert(prosent: Int): Int {
-        val uuid = UUID.randomUUID().toString()
-        val query = queryOf(
-            "insert into $table ($id, $stillingsprosent) values (?, ?)",
-            uuid,
-            prosent
+    fun leggTilNyBekreftelse(fnr: String, orgnr: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
+        val uuidBekreftelse = UUID.randomUUID().toString()
+        val uuidBekreftelseHendelse = UUID.randomUUID().toString()
+        val bekreftelseQuery = queryOf(
+
+            """
+                insert into $bekreftelseTable ($idColumn, $fnrColumn, $orgnrColumn)
+                values (?, ?, ?)
+            """.trimIndent(),
+            uuidBekreftelse,
+            fnr,
+            orgnr
+        ).asUpdate
+        val bekfreftelseHendelseQuery = queryOf(
+            """
+               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
+               values (?, ?, ?, ?, ?)
+            """.trimIndent(),
+            uuidBekreftelseHendelse,
+            uuidBekreftelse,
+            stillingsprosent,
+            startDato,
+            sluttDato
         ).asUpdate
 
-        return using(sessionOf(dataSource)) { it.run(query) }
+        val rowsAffected = using(sessionOf(dataSource)) {
+            it.transaction { tx ->
+                tx.run(bekreftelseQuery)
+                tx.run(bekfreftelseHendelseQuery)
+            }
+        }
+
+        return uuidBekreftelse
     }
 
-    fun hentAlt(): List<BekreftelsePåArbeidsforhold> {
-        val query = queryOf("select * from $table")
-            .map(toBekreftelsePåArbeidsforhold)
+    fun leggTilNyHendelsePåBekreftelse(bekreftelseId: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
+        val uuidBekreftelseHendelse = UUID.randomUUID().toString()
+        val bekreftelseHendelseQuery = queryOf(
+            """
+               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
+               values (?, ?, ?, ?, ?)
+            """.trimIndent(),
+            uuidBekreftelseHendelse,
+            bekreftelseId,
+            stillingsprosent,
+            startDato,
+            sluttDato
+        ).asUpdate
+
+        val rowsAffected = using(sessionOf(dataSource)) {
+            it.transaction { tx ->
+                tx.run(bekreftelseHendelseQuery)
+            }
+        }
+        return uuidBekreftelseHendelse
+    }
+
+    fun hentAlleBekreftelserForOrganisasjon(orgnr: String): List<BekreftelsePåArbeidsforhold> {
+        val query = queryOf("""
+            select * from $bekreftelseTable where $orgnrColumn = ?
+        """.trimIndent(),
+            orgnr
+            ).map(toBekreftelsePåArbeidsforhold)
             .asList
 
         return using(sessionOf(dataSource)) { it.run(query) }
     }
 
-    companion object {
-        const val table = "bekreftelse_arbeidsforhold"
-        const val id = "id"
-        const val stillingsprosent = "stillingsprosent"
-    }
-}
 
+
+    fun hentAlleHendelserForBekreftelseOgOrganisasjon(orgnr: String): List <BekreftelsePåArbeidsforholdHendelse> {
+        val alleBekreftelserForOrganisasjon = hentAlleBekreftelserForOrganisasjon(orgnr)
+
+
+        return emptyList()
+    }
+
+//    fun hentBekreftelseHendelse(id: String): BekreftelsePåArbeidsforholdHendelse {
+//        return
+//    }
+
+}

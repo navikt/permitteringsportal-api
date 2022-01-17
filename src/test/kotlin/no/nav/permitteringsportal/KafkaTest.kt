@@ -4,6 +4,7 @@ import io.mockk.InternalPlatformDsl.toStr
 import io.mockk.verify
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
+import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.kafka.DagpengeMeldingService
 import no.nav.permitteringsportal.setup.dataFraAnsatt
 import no.nav.permitteringsportal.setup.mottaKafkamelding
@@ -26,12 +27,12 @@ class KafkaTest {
         val dataFraAnsatt = DataFraAnsatt(
             uuid, "hello"
         )
-
+        val dataSource  = LokalDatabaseConfig().dataSource
         val mockProducer = mockProducer()
         val mockConsumer = mockConsumer()
         val mockOAuth2Server = MockOAuth2Server()
         val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
-        startLokalApp(mockOAuth2Server, mockConsumer, mockProducer,).use {
+        startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,).use {
             service.sendUsendte()
             val meldingerSendtPåKafka = mockProducer.history()
             assertThat(meldingerSendtPåKafka.size).isEqualTo(1)
