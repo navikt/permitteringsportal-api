@@ -3,6 +3,8 @@ package no.nav.permitteringsportal.database
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import kotliquery.using
+import no.nav.permitteringsportal.*
+import no.nav.permitteringsportal.fnrColumnDataFraAnsatt
 import java.lang.IllegalArgumentException
 import java.util.*
 import javax.sql.DataSource
@@ -105,6 +107,25 @@ class Repository(private val dataSource: DataSource) {
             return using(sessionOf(dataSource)) { it.run(query) }
         }
         return emptyList()
+    }
+
+    fun leggTilNyOppgave(dataFraAnsatt: DataFraAnsatt): String {
+        val uuidNyOppgave = UUID.randomUUID().toString()
+        val leggTilNyOppgaveQuery = queryOf(
+            """
+               insert into $dataFraAnsattTable ($idColumnDataFraAnsatt, $orgnrColumnDataFraAnsatt, $fnrColumnDataFraAnsatt) 
+               values (?, ?, ?)
+            """.trimIndent(),
+            uuidNyOppgave,
+            dataFraAnsatt.orgnr,
+            dataFraAnsatt.fnr
+        ).asUpdate
+        val rowsAffected = using(sessionOf(dataSource)) {
+            it.transaction { tx ->
+                tx.run(leggTilNyOppgaveQuery)
+            }
+        }
+        return uuidNyOppgave
     }
 
 //    fun hentBekreftelseHendelse(id: String): BekreftelsePåArbeidsforholdHendelse {

@@ -1,6 +1,7 @@
 package no.nav.permitteringsvarsel.notifikasjon.kafka
 
 import no.nav.permitteringsportal.DataFraAnsatt
+import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
 import no.nav.permitteringsportal.utils.log
 import org.apache.kafka.clients.producer.Producer
@@ -11,7 +12,8 @@ import java.io.Closeable
 import java.time.Duration
 
 class DataFraAnsattConsumer(
-        private val consumer: Consumer<String, DataFraAnsatt>
+        private val consumer: Consumer<String, DataFraAnsatt>,
+        private val repository: Repository
 ) : Closeable {
 
     fun start() {
@@ -22,7 +24,7 @@ class DataFraAnsattConsumer(
                 val records: ConsumerRecords<String, DataFraAnsatt> = consumer.poll(Duration.ofSeconds(5))
                 if (records.count() == 0) continue
                 consumer.commitSync()
-
+                records.forEach{ repository.leggTilNyOppgave(it.value())}
                 log.info("Committet offset ${records.last().offset()} til Kafka")
             }
         } catch (exception: WakeupException) {
