@@ -3,12 +3,13 @@ package no.nav.permitteringsportal.database
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import kotliquery.using
+import java.lang.IllegalArgumentException
 import java.util.*
 import javax.sql.DataSource
 
 class Repository(private val dataSource: DataSource) {
 
-    fun leggTilNyBekreftelse(fnr: String, orgnr: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
+    fun leggTilNyBekreftelse(fnr: String, orgnr: String, type: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
         val uuidBekreftelse = UUID.randomUUID().toString()
         val uuidBekreftelseHendelse = UUID.randomUUID().toString()
         val bekreftelseQuery = queryOf(
@@ -23,11 +24,12 @@ class Repository(private val dataSource: DataSource) {
         ).asUpdate
         val bekfreftelseHendelseQuery = queryOf(
             """
-               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
-               values (?, ?, ?, ?, ?)
+               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $typeColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
+               values (?, ?, ?, ?, ?, ?)
             """.trimIndent(),
             uuidBekreftelseHendelse,
             uuidBekreftelse,
+            type,
             stillingsprosent,
             startDato,
             sluttDato
@@ -43,15 +45,16 @@ class Repository(private val dataSource: DataSource) {
         return uuidBekreftelse
     }
 
-    fun leggTilNyHendelsePåBekreftelse(bekreftelseId: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
+    fun leggTilNyHendelsePåBekreftelse(bekreftelseId: String, type: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
         val uuidBekreftelseHendelse = UUID.randomUUID().toString()
         val bekreftelseHendelseQuery = queryOf(
             """
-               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
-               values (?, ?, ?, ?, ?)
+               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $typeColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
+               values (?, ?, ?, ?, ?, ?)
             """.trimIndent(),
             uuidBekreftelseHendelse,
             bekreftelseId,
+            type,
             stillingsprosent,
             startDato,
             sluttDato
@@ -76,12 +79,31 @@ class Repository(private val dataSource: DataSource) {
         return using(sessionOf(dataSource)) { it.run(query) }
     }
 
+    fun hentBekreftelseMedId(bekreftelseId: String): BekreftelsePåArbeidsforhold? {
+        val query = queryOf(
+            """
+            select * from $bekreftelseTable where $idColumn = ?
+        """.trimIndent(),
+            bekreftelseId
+        ).map(toBekreftelsePåArbeidsforhold).asSingle
 
+        return using(sessionOf(dataSource)) { it.run(query) }
+    }
 
-    fun hentAlleHendelserForBekreftelseOgOrganisasjon(orgnr: String): List <BekreftelsePåArbeidsforholdHendelse> {
-        val alleBekreftelserForOrganisasjon = hentAlleBekreftelserForOrganisasjon(orgnr)
+    fun hentAlleHendelserForBekreftelseOgOrganisasjon(orgnr: String, bekreftelseId: String): List<BekreftelsePåArbeidsforholdHendelse> {
+        val bekreftelse = hentBekreftelseMedId(bekreftelseId)
 
+        if (bekreftelse != null) {
+            if(bekreftelse.orgnr != orgnr) {
+                throw IllegalArgumentException("Ikke sammenheng mellom orgnr i bekreftelse og hendelse")
+            }
+            val query = queryOf("""
+                select * from $bekreftelseHendelseTable where $bekrefteldIdColumnHendelse = ?
+            """.trimIndent(), bekreftelseId
+            ).map(toBekreftelsePåArbeidsforholdHendelse).asList
 
+            return using(sessionOf(dataSource)) { it.run(query) }
+        }
         return emptyList()
     }
 
