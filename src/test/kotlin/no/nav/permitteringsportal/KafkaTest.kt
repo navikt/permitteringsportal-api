@@ -21,20 +21,35 @@ import java.time.ZoneId
 import java.util.*
 
 class KafkaTest {
+    val uuid: UUID = UUID.randomUUID()
+    val dataFraAnsatt = DataFraAnsatt(
+        uuid, "hello"
+    )
+    val dataSource  = LokalDatabaseConfig().dataSource
+    val mockProducer = mockProducer()
+    val mockConsumer = mockConsumer()
+    val mockOAuth2Server = MockOAuth2Server()
+    val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
     @Test
-    fun `skal lese topic fra consumer`() {
-        val uuid: UUID = UUID.randomUUID()
-        val dataFraAnsatt = DataFraAnsatt(
-            uuid, "hello"
-        )
-        val dataSource  = LokalDatabaseConfig().dataSource
-        val mockProducer = mockProducer()
-        val mockConsumer = mockConsumer()
-        val mockOAuth2Server = MockOAuth2Server()
-        val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
+    fun `skal sende melding pa kafka`() {
         startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,).use {
             service.sendUsendte()
             val meldingerSendtPåKafka = mockProducer.history()
             assertThat(meldingerSendtPåKafka.size).isEqualTo(1)
         }
+
+    /*@Test
+    fun `consumenten skal lese av topic`() {
+        startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,).use {
+            mottaKafkamelding(mockConsumer, dataFraAnsatt)
+            val forventedeStillinger = listOf(
+                dataFraAnsatt
+            )
+            assertThat(mockConsumer.).isEqualTo(1)
+        }
+    }
+
+     */
+
     }}
+
