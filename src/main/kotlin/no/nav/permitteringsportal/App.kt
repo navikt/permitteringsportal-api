@@ -33,11 +33,11 @@ class App(
     private val dataSource: DataSource,
     private val issuerConfig: IssuerConfig,
     private val producer: Producer<String, BekreftelsePåArbeidsforhold>,
+    private val consumer: Consumer<String, DataFraAnsatt>
 
 ): Closeable {
 
     private val repository = Repository(dataSource)
-    private val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer, repository)
     private val server = embeddedServer(Netty, port = 8080) {
 
@@ -70,16 +70,9 @@ class App(
 }
 
 fun main() {
-    val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     val producer: Producer<String, BekreftelsePåArbeidsforhold> = KafkaProducer<String, BekreftelsePåArbeidsforhold>(producerConfig())
+    val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     //har ikke implementert database og mottak av foresporsler enda.
-    val uuid: UUID = UUID.randomUUID()
-    val dataFraAnsatt = DataFraAnsatt(
-        uuid, "hello",
-        "123456678"
-    )
-    //dette er mock
-
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
     // TODO: Koble mot PostgreSQL i miljø når vi har landa litt mer detaljer på schema
@@ -95,6 +88,7 @@ fun main() {
         dataSource = databaseConfig.dataSource,
         issuerConfig = issuerConfig,
         producer,
+        consumer
     ).start()
 }
 
