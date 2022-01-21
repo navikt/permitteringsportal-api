@@ -7,6 +7,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.kafka.consumerConfig
 import no.nav.permitteringsportal.kafka.producerConfig
 import no.nav.permitteringsportal.utils.log
@@ -20,7 +21,7 @@ import kotlin.concurrent.thread
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.database.runFlywayMigrations
-import no.nav.permitteringsportal.kafka.DagpengeMeldingService
+import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.utils.Cluster
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
@@ -32,13 +33,13 @@ class App(
     private val dataSource: DataSource,
     private val issuerConfig: IssuerConfig,
     private val consumer: Consumer<String, DataFraAnsatt>,
-    private val producer: Producer<String, DataFraAnsatt>,
-    private val dagpengeMeldingService: DagpengeMeldingService
+    private val producer: Producer<String, BekreftelsePåArbeidsforhold>,
+    private val bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService
 
 ): Closeable {
 
     private val repository = Repository(dataSource)
-    private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer)
+    private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer, repository)
 
     private val server = embeddedServer(Netty, port = 8080) {
 
@@ -72,15 +73,16 @@ class App(
 
 fun main() {
     val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
-    val producer: Producer<String, DataFraAnsatt> = KafkaProducer<String, DataFraAnsatt>(producerConfig())
+    val producer: Producer<String, BekreftelsePåArbeidsforhold> = KafkaProducer<String, BekreftelsePåArbeidsforhold>(producerConfig())
 
     //har ikke implementert database og mottak av foresporsler enda.
     val uuid: UUID = UUID.randomUUID()
     val dataFraAnsatt = DataFraAnsatt(
-        uuid, "hello"
+        uuid, "hello",
+        "123456678"
     )
     //dette er mock
-    val dagpengeMeldingService = DagpengeMeldingService(producer, listOf( dataFraAnsatt))
+    val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer)
 
 
     log("main").info("Starter app i cluster: ${Cluster.current}")

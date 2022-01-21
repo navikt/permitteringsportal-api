@@ -1,6 +1,7 @@
 package no.nav.permitteringsportal.kafka
 
 import no.nav.permitteringsportal.DataFraAnsatt
+import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.utils.log
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecords
@@ -15,9 +16,9 @@ import javax.xml.crypto.Data
 
 val svarTopic = "dagpengedok"
 
-class DagpengeMeldingService(
-    private val producer: Producer<String, DataFraAnsatt>,
-    private val usendteForespørsler: List<DataFraAnsatt>
+class BekreftelsePåArbeidsforholdService(
+    private val producer: Producer<String, BekreftelsePåArbeidsforhold>,
+    private val usendteForespørsler: List<BekreftelsePåArbeidsforhold>
 ) {
         fun sendUsendte() {
             if (usendteForespørsler.isNotEmpty()) {

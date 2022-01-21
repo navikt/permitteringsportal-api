@@ -128,6 +128,17 @@ class Repository(private val dataSource: DataSource) {
         return uuidNyOppgave
     }
 
+    fun hentOppgave(oppgaveId: String): BekreftelsePåArbeidsforhold?{
+        val query = queryOf(
+            """
+            select * from $dataFraAnsattTable where $idColumnDataFraAnsatt = ?
+        """.trimIndent(),
+            oppgaveId
+        ).map(toBekreftelsePåArbeidsforhold).asSingle
+
+        return using(sessionOf(dataSource)) { it.run(query) }
+    }
+
 //    fun hentBekreftelseHendelse(id: String): BekreftelsePåArbeidsforholdHendelse {
 //        return
 //    }

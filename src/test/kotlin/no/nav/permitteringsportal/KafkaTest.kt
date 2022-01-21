@@ -1,23 +1,13 @@
 package no.nav.permitteringsportal
 
-import io.mockk.InternalPlatformDsl.toStr
-import io.mockk.verify
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
-import no.nav.permitteringsportal.kafka.DagpengeMeldingService
-import no.nav.permitteringsportal.setup.dataFraAnsatt
-import no.nav.permitteringsportal.setup.mottaKafkamelding
+import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.junit.Test
 
-import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
-
-import org.apache.kafka.common.TopicPartition
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class KafkaTest {
@@ -29,7 +19,7 @@ class KafkaTest {
     val mockProducer = mockProducer()
     val mockConsumer = mockConsumer()
     val mockOAuth2Server = MockOAuth2Server()
-    val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
+    val service = BekreftelsePåArbeidsforholdService(mockProducer, listOf(dataFraAnsatt))
     @Test
     fun `skal sende melding pa kafka`() {
         startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,).use {
@@ -38,7 +28,7 @@ class KafkaTest {
             assertThat(meldingerSendtPåKafka.size).isEqualTo(1)
         }
 
-    /*@Test
+    @Test
     fun `consumenten skal lese av topic`() {
         startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,).use {
             mottaKafkamelding(mockConsumer, dataFraAnsatt)
@@ -49,7 +39,6 @@ class KafkaTest {
         }
     }
 
-     */
 
     }}
 

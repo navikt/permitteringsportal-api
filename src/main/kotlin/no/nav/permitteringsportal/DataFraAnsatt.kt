@@ -1,5 +1,10 @@
 package no.nav.permitteringsportal
 
+import kotliquery.Row
+import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
+import no.nav.permitteringsportal.database.fnrColumn
+import no.nav.permitteringsportal.database.idColumn
+import no.nav.permitteringsportal.database.orgnrColumn
 import java.util.*
 
 const val dataFraAnsattTable = "data_fra_ansatt"
@@ -13,3 +18,11 @@ data class DataFraAnsatt(
         val orgnr: String,
         val fnr: String
 )
+
+val toDataFraAnsatt = { row: Row ->
+        DataFraAnsatt(
+                row.string(idColumnDataFraAnsatt),
+                row.string(orgnrColumnDataFraAnsatt),
+                row.string(fnrColumnDataFraAnsatt)
+        )
+}

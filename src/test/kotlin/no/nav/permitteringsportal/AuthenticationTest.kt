@@ -3,7 +3,7 @@ package no.nav.permitteringsportal
 import com.github.kittinunf.fuel.Fuel
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
-import no.nav.permitteringsportal.kafka.DagpengeMeldingService
+import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.security.mock.oauth2.MockOAuth2Server
@@ -21,7 +21,7 @@ class AuthenticationTest {
         val dataFraAnsatt = DataFraAnsatt(
             uuid, "hello"
         )
-        val service = DagpengeMeldingService(mockProducer, listOf(dataFraAnsatt))
+        val service = BekreftelsePåArbeidsforholdService(mockProducer, listOf(dataFraAnsatt))
         private val mockOAuth2Server = MockOAuth2Server()
         private val dataSource = LokalDatabaseConfig().dataSource
         init {
