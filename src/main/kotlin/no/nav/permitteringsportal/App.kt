@@ -32,15 +32,13 @@ import javax.sql.DataSource
 class App(
     private val dataSource: DataSource,
     private val issuerConfig: IssuerConfig,
-    private val consumer: Consumer<String, DataFraAnsatt>,
     private val producer: Producer<String, BekreftelsePåArbeidsforhold>,
-    private val bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService
 
 ): Closeable {
 
     private val repository = Repository(dataSource)
+    private val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer, repository)
-
     private val server = embeddedServer(Netty, port = 8080) {
 
         install(Authentication) {
@@ -74,7 +72,6 @@ class App(
 fun main() {
     val consumer: Consumer<String, DataFraAnsatt> = KafkaConsumer<String, DataFraAnsatt>(consumerConfig())
     val producer: Producer<String, BekreftelsePåArbeidsforhold> = KafkaProducer<String, BekreftelsePåArbeidsforhold>(producerConfig())
-
     //har ikke implementert database og mottak av foresporsler enda.
     val uuid: UUID = UUID.randomUUID()
     val dataFraAnsatt = DataFraAnsatt(
@@ -82,8 +79,6 @@ fun main() {
         "123456678"
     )
     //dette er mock
-    val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer)
-
 
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
@@ -99,9 +94,7 @@ fun main() {
     App(
         dataSource = databaseConfig.dataSource,
         issuerConfig = issuerConfig,
-        consumer,
         producer,
-        dagpengeMeldingService
     ).start()
 }
 

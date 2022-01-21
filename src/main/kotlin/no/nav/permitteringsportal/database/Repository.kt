@@ -1,5 +1,6 @@
 package no.nav.permitteringsportal.database
 
+
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import kotliquery.using
@@ -128,13 +129,13 @@ class Repository(private val dataSource: DataSource) {
         return uuidNyOppgave
     }
 
-    fun hentOppgave(oppgaveId: String): BekreftelsePåArbeidsforhold?{
+    fun hentOppgave(oppgaveId: String): DataFraAnsatt?{
         val query = queryOf(
             """
             select * from $dataFraAnsattTable where $idColumnDataFraAnsatt = ?
         """.trimIndent(),
             oppgaveId
-        ).map(toBekreftelsePåArbeidsforhold).asSingle
+        ).map(toDataFraAnsatt).asSingle
 
         return using(sessionOf(dataSource)) { it.run(query) }
     }
