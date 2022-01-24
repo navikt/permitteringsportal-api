@@ -1,8 +1,12 @@
 package no.nav.permitteringsportal
 
+import com.nimbusds.jwt.JWT
+import hentBekreftelse
+import hentOppgaver
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
@@ -25,7 +29,10 @@ import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.utils.Cluster
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
+import no.nav.security.token.support.ktor.TokenValidationContextPrincipal
 import no.nav.security.token.support.ktor.tokenValidationSupport
+import oppdatereBekreftelse
+import sendInnBekreftelse
 import java.util.*
 import javax.sql.DataSource
 
@@ -49,11 +56,22 @@ class App(
 
         routing {
             authenticate {
-                get("/sikret-endepunkt") { call.respond(HttpStatusCode.OK) }
+                get("/sikret-endepunkt") {
+
+                    val authContext = call.authentication
+                    val principal = authContext.principal<TokenValidationContextPrincipal>()
+                    //principal?.context?.getClaims()
+                    call.respond(HttpStatusCode.OK, principal.toString())
+                }
+                hentOppgaver(repository)
+                sendInnBekreftelse(repository)
+                hentBekreftelse(repository)
+                oppdatereBekreftelse(repository)
             }
 
             get("/internal/isAlive") { call.respond(HttpStatusCode.OK) }
             get("/internal/isReady") { call.respond(HttpStatusCode.OK) }
+
         }
     }
 
@@ -82,7 +100,7 @@ fun main() {
         "123456678"
     )
     //dette er mock
-    val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer)
+    val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer, emptyList())
 
 
     log("main").info("Starter app i cluster: ${Cluster.current}")

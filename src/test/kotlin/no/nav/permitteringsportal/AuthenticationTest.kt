@@ -17,15 +17,11 @@ class AuthenticationTest {
 
         val mockProducer = mockProducer()
         val mockConsumer = mockConsumer()
-        val uuid: UUID = UUID.randomUUID()
-        val dataFraAnsatt = DataFraAnsatt(
-            uuid, "hello"
-        )
-        val service = BekreftelsePåArbeidsforholdService(mockProducer, listOf(dataFraAnsatt))
+        val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
         private val mockOAuth2Server = MockOAuth2Server()
         private val dataSource = LokalDatabaseConfig().dataSource
         init {
-            startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer,service )
+            startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer, service)
         }
     }
 

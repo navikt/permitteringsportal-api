@@ -21,7 +21,7 @@ create table data_fra_ansatt
     id uuid primary key,
     orgnr varchar,
     fnr varchar
-)
+);
 
 alter table bekreftelse_arbeidsforhold_hendelse
     add foreign key(bekreftelse_id) references bekreftelse_arbeidsforhold(id)

@@ -19,10 +19,10 @@ data class DataFraAnsatt(
         val fnr: String
 )
 
-val toDataFraAnsatt = { row: Row ->
-        DataFraAnsatt(
-                row.string(idColumnDataFraAnsatt),
-                row.string(orgnrColumnDataFraAnsatt),
-                row.string(fnrColumnDataFraAnsatt)
-        )
-}
+//val toDataFraAnsatt = { row: Row ->
+//        DataFraAnsatt(
+//                row.string(idColumnDataFraAnsatt),
+//                row.string(orgnrColumnDataFraAnsatt),
+//                row.string(fnrColumnDataFraAnsatt)
+//        )
+//}

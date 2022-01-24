@@ -5,5 +5,5 @@ import java.util.*
 
 val uuid: UUID =UUID.randomUUID()
 val dataFraAnsatt = DataFraAnsatt(
-    uuid, "hello"
+    uuid, "hello", "123"
 )
