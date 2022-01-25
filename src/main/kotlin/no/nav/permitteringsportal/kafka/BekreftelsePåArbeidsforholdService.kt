@@ -1,19 +1,9 @@
 package no.nav.permitteringsportal.kafka
 
-import no.nav.permitteringsportal.DataFraAnsatt
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.utils.log
-import org.apache.kafka.clients.consumer.Consumer
-import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.errors.WakeupException
-import java.io.Closeable
-import java.time.Duration
-import java.util.*
-import javax.xml.crypto.Data
-
 val svarTopic = "dagpengedok"
 
 class BekreftelsePåArbeidsforholdService(
