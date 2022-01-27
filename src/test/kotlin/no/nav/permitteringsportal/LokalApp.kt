@@ -8,6 +8,9 @@ import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.producer.Producer
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
+import no.nav.permitteringsportal.minsideklient.MinSideNotifikasjonerService
+import no.nav.permitteringsportal.minsideklient.getHttpClient
+import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.token.support.ktor.IssuerConfig
@@ -18,10 +21,13 @@ fun startLokalApp(
     issuerConfig: IssuerConfig = issuerConfig(MockOAuth2Server()),
     consumer: Consumer<String, DataFraAnsatt> = mockConsumer(),
     producer: Producer<String, BekreftelsePåArbeidsforhold> = mockProducer(),
-    bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService = BekreftelsePåArbeidsforholdService(producer, emptyList())
+    bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService = BekreftelsePåArbeidsforholdService(producer, emptyList()),
 ): App {
+    val httpClient = getHttpClient()
+    val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)
+    val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
     val app = App(dataSource = LokalDatabaseConfig().dataSource,
-        issuerConfig ,consumer, producer, bekreftelsePåArbeidsforholdService)
+        issuerConfig ,consumer, producer, bekreftelsePåArbeidsforholdService, minSideNotifikasjonerService)
     app.start()
     return app
 }

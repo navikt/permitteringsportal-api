@@ -3,6 +3,7 @@ package no.nav.permitteringsvarsel.notifikasjon.kafka
 import no.nav.permitteringsportal.DataFraAnsatt
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.kafka.permitteringsmeldingtopic
+import no.nav.permitteringsportal.minsideklient.MinSideNotifikasjonerService
 import no.nav.permitteringsportal.utils.log
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.consumer.Consumer
@@ -13,7 +14,8 @@ import java.time.Duration
 
 class DataFraAnsattConsumer(
         private val consumer: Consumer<String, DataFraAnsatt>,
-        private val repository: Repository
+        private val repository: Repository,
+        private val minSideNotifikasjonerService: MinSideNotifikasjonerService
 ) : Closeable {
 
     fun start() {
@@ -24,7 +26,10 @@ class DataFraAnsattConsumer(
                 val records: ConsumerRecords<String, DataFraAnsatt> = consumer.poll(Duration.ofSeconds(5))
                 if (records.count() == 0) continue
                 consumer.commitSync()
-                records.forEach{ repository.leggTilNyOppgave(it.value())}
+                records.forEach{
+                    repository.leggTilNyOppgave(it.value())
+                    minSideNotifikasjonerService.sendBeskjed(it.value().orgnr, "lenke til frontend", "ekstern id")
+                }
                 log.info("Committet offset ${records.last().offset()} til Kafka")
             }
         } catch (exception: WakeupException) {

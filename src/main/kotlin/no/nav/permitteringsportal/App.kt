@@ -19,6 +19,9 @@ import no.nav.permitteringsportal.database.runFlywayMigrations
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.kafka.consumerConfig
 import no.nav.permitteringsportal.kafka.producerConfig
+import no.nav.permitteringsportal.minsideklient.MinSideNotifikasjonerService
+import no.nav.permitteringsportal.minsideklient.getHttpClient
+import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
 import no.nav.permitteringsportal.utils.Cluster
 import no.nav.permitteringsportal.utils.log
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
@@ -41,12 +44,13 @@ class App(
     private val issuerConfig: IssuerConfig,
     private val consumer: Consumer<String, DataFraAnsatt>,
     private val producer: Producer<String, BekreftelsePåArbeidsforhold>,
-    private val bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService
+    private val bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService,
+    private val minSideNotifikasjonerService: MinSideNotifikasjonerService,
 
 ) : Closeable {
 
     private val repository = Repository(dataSource)
-    private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer, repository)
+    private val dataFraAnsattConsumer: DataFraAnsattConsumer = DataFraAnsattConsumer(consumer, repository, minSideNotifikasjonerService)
 
     private val server = embeddedServer(Netty, port = 8080) {
 
@@ -98,6 +102,9 @@ fun main() {
     )
     //dette er mock
     val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer, emptyList())
+    val httpClient = getHttpClient()
+    val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)
+    val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
 
 
     log("main").info("Starter app i cluster: ${Cluster.current}")
@@ -116,6 +123,7 @@ fun main() {
         issuerConfig = issuerConfig,
         consumer,
         producer,
-        dagpengeMeldingService
+        dagpengeMeldingService,
+        minSideNotifikasjonerService
     ).start()
 }
