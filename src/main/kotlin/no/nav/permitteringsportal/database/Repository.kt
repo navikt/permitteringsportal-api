@@ -11,7 +11,7 @@ import javax.sql.DataSource
 
 class Repository(private val dataSource: DataSource) {
 
-    fun leggTilNyBekreftelse(fnr: String, orgnr: String, type: String, stillingsprosent: Int, startDato: Date, sluttDato: Date): String {
+    fun leggTilNyBekreftelse(fnr: String, orgnr: String): String {
         val uuidBekreftelse = UUID.randomUUID().toString()
         val uuidBekreftelseHendelse = UUID.randomUUID().toString()
         val bekreftelseQuery = queryOf(
@@ -24,23 +24,23 @@ class Repository(private val dataSource: DataSource) {
             fnr,
             orgnr
         ).asUpdate
-        val bekfreftelseHendelseQuery = queryOf(
-            """
-               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $typeColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse) 
-               values (?, ?, ?, ?, ?, ?)
-            """.trimIndent(),
-            uuidBekreftelseHendelse,
-            uuidBekreftelse,
-            type,
-            stillingsprosent,
-            startDato,
-            sluttDato
-        ).asUpdate
+//        val bekfreftelseHendelseQuery = queryOf(
+//            """
+//               insert into $bekreftelseHendelseTable ($idColumnHendelse, $bekrefteldIdColumnHendelse, $typeColumnHendelse, $stillingsprosentColumnHendelse, $startDatoColumnHendelse, $sluttDatoColumnHendelse)
+//               values (?, ?, ?, ?, ?, ?)
+//            """.trimIndent(),
+//            uuidBekreftelseHendelse,
+//            uuidBekreftelse,
+//            type,
+//            stillingsprosent,
+//            startDato,
+//            sluttDato
+//        ).asUpdate
 
         val rowsAffected = using(sessionOf(dataSource)) {
             it.transaction { tx ->
                 tx.run(bekreftelseQuery)
-                tx.run(bekfreftelseHendelseQuery)
+                // tx.run(bekfreftelseHendelseQuery)
             }
         }
 

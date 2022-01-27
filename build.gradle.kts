@@ -27,6 +27,7 @@ dependencies {
     implementation("com.graphql-java:graphql-java:16.2")
     implementation("com.expediagroup:graphql-kotlin-ktor-client:5.2.0")
 
+    implementation("io.ktor:ktor-serialization:1.6.4")
 
     implementation("org.apache.kafka:kafka-clients:2.7.0")
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
@@ -42,6 +43,7 @@ dependencies {
     testImplementation("no.nav.security:mock-oauth2-server:0.4.0")
 
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-jackson:2.3.1")
 
     // TODO: Endre til testImplementation når vi er kobla mot PostgreSQL i miljø
     implementation("com.h2database:h2:1.4.200")

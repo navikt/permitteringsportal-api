@@ -27,15 +27,15 @@ class AuthenticationTest {
 
     @Test
     fun `Skal ikke nå endepunkt uten token`() {
-        val (_, response, _) = Fuel.get("http://localhost:8080/sikret-endepunkt").response()
+        val (_, response, _) = Fuel.get("http://localhost:8080/bekreftelse/12345").response()
         assertThat(response.statusCode).isEqualTo(401)
     }
 
     @Test
     fun `Skal nå endepunkt med token`() {
-        val (_, response, _) = Fuel.get("http://localhost:8080/sikret-endepunkt")
+        val (_, response, _) = Fuel.get("http://localhost:8080/bekreftelse/12345")
             .medArbeidsgiverToken(mockOAuth2Server)
             .response()
-        assertThat(response.statusCode).isEqualTo(200)
+        assertThat(response.statusCode).isEqualTo(404) // 404 er ok her
     }
 }
