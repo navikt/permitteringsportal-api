@@ -119,6 +119,3 @@ fun main() {
         dagpengeMeldingService
     ).start()
 }
-
-
-

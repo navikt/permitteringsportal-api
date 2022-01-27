@@ -3,12 +3,11 @@ package no.nav.permitteringsportal
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
-import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
-import no.nav.permitteringsportal.setup.mottaKafkamelding
+import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import org.junit.Test
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
+import org.junit.Test
 import java.util.*
 
 val uuidMock: UUID = UUID.randomUUID()
@@ -17,13 +16,26 @@ val dataFraAnsattMock = DataFraAnsatt(
 )
 
 class KafkaTest {
-    val dataSource  = LokalDatabaseConfig().dataSource
-    val mockProducer = mockProducer()
-    val mockConsumer = mockConsumer()
-    val mockOAuth2Server = MockOAuth2Server()
+    companion object {
+        val dataSource  = LokalDatabaseConfig().dataSource
+        val mockProducer = mockProducer()
+        val mockConsumer = mockConsumer()
+        val mockOAuth2Server = MockOAuth2Server()
+
+        init {
+            mockOAuth2Server.shutdown()
+            mockOAuth2Server.start()
+        }
+    }
+
+    @After
+    fun teardown() {
+        mockOAuth2Server.shutdown()
+    }
+
     @Test
     fun `skal sende melding pa kafka`() {
-        startLokalApp(dataSource, mockOAuth2Server, mockConsumer, mockProducer).use {
+        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer).use {
             val meldingerSendtPåKafka = mockProducer.history()
             assertThat(meldingerSendtPåKafka.size).isEqualTo(0)
         }
