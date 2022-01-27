@@ -2,6 +2,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.6.10"
     id("com.github.johnrengelman.shadow") version "7.1.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
+    id("com.expediagroup.graphql") version "5.2.0"
     application
 }
 
@@ -16,8 +17,15 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    implementation("com.expediagroup:graphql-kotlin-ktor-client:5.2.0")
+    val ktor_version = "1.6.4"
+    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
+    implementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-core:1.6.4")
     implementation("io.ktor:ktor-server-netty:1.6.4")
+
+    implementation("com.graphql-java:graphql-java:16.2")
+    implementation("com.expediagroup:graphql-kotlin-ktor-client:5.2.0")
 
 
     implementation("org.apache.kafka:kafka-clients:2.7.0")
@@ -42,6 +50,12 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("io.mockk:mockk:1.10.5")
 
+}
+
+val graphqlGenerateClient by tasks.getting(com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask::class) {
+    packageName.set("no.nav.permitteringsportal.graphql.generated\"")
+    schemaFile.set(file("src/main/resources/schema.graphql"))
+    serializer.set(com.expediagroup.graphql.plugin.gradle.config.GraphQLSerializer.KOTLINX)
 }
 
 application {
