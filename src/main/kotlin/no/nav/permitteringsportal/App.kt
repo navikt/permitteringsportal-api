@@ -102,6 +102,8 @@ fun main() {
     )
     //dette er mock
     val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer, emptyList())
+
+    //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
     val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)
     val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
