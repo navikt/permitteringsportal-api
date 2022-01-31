@@ -108,7 +108,6 @@ fun main() {
     val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)
     val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
 
-
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
     // TODO: Koble mot PostgreSQL i miljø når vi har landa litt mer detaljer på schema

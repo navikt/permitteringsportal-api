@@ -3,6 +3,7 @@ package no.nav.permitteringsportal.minsideklient.graphql
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
+import no.nav.permitteringsportal.graphql.`generated"`.OpprettNyBeskjed
 import java.net.URL
 
 class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient) {
@@ -16,7 +17,7 @@ class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient) {
             url = URL(endpoint),
             httpClient = httpClient
         )
-        /*
+
         runBlocking {
             val query = OpprettNyBeskjed(variables = OpprettNyBeskjed.Variables(
                 virksomhetsnummer,
@@ -27,7 +28,7 @@ class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient) {
 
         }
 
-         */
+
         return
     }
 }
