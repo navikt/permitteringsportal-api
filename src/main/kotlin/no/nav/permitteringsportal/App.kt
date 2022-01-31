@@ -28,7 +28,6 @@ import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
 import no.nav.security.token.support.ktor.tokenValidationSupport
-import oppdaterBekreftelse
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -66,7 +65,6 @@ class App(
                 sendInnBekreftelse(repository)
                 leggTilBekreftelse(repository)
                 hentBekreftelse(repository)
-                oppdaterBekreftelse(repository)
             }
 
             get("/internal/isAlive") { call.respond(HttpStatusCode.OK) }

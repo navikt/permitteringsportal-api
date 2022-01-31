@@ -13,14 +13,12 @@ fun Route.hentOppgaver(repository: Repository) {
         // repository.hentOppgaver(orgnr)
     }
 }
-
 fun Route.sendInnBekreftelse(repository: Repository) {
     post("/oppgave") {
         call.respond(HttpStatusCode.Created)
         repository.leggTilNyBekreftelse("fnr", "orgnr")
     }
 }
-
 fun Route.hentBekreftelse(repository: Repository) {
     get("/bekreftelse/{id}") {
         val id = call.parameters["id"]
@@ -32,18 +30,8 @@ fun Route.hentBekreftelse(repository: Repository) {
         }
     }
 }
-
 fun Route.leggTilBekreftelse(repository: Repository) {
     post("/bekreftelse") {
         val nyBekreftelse = call.receive<BekreftelsePåArbeidsforhold>()
-        val uuid = repository.leggTilNyBekreftelse(nyBekreftelse.fnr, nyBekreftelse.orgnr)
-        call.respond(uuid)
-
-    }
-}
-
-fun Route.oppdaterBekreftelse(repository: Repository) {
-    put("/bekreftelse/{id}") {
-
     }
 }
