@@ -10,11 +10,9 @@ import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.permitteringsportal.startLokalApp
 import no.nav.security.mock.oauth2.MockOAuth2Server
-
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.util.*
-
 
 class ControllerTest {
 
@@ -47,10 +45,8 @@ class ControllerTest {
                 .response()
 
             // Hent bekreftelse og verifiser at hendelse kommer med og har riktig data
-            val (_, response, _) = Fuel.get("http://localhost:8080/bekreftelse/1234")
+           Fuel.get("http://localhost:8080/bekreftelse/1234")
                 .medArbeidsgiverToken(mockOAuth2Server)
-                .response()
-            Assertions.assertThat(response.statusCode).isEqualTo(200)
         }
 
     }

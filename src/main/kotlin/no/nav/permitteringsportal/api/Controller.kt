@@ -5,6 +5,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.Repository
+import java.util.*
 
 
 fun Route.hentOppgaver(repository: Repository) {
@@ -33,5 +34,12 @@ fun Route.hentBekreftelse(repository: Repository) {
 fun Route.leggTilBekreftelse(repository: Repository) {
     post("/bekreftelse") {
         val nyBekreftelse = call.receive<BekreftelsePåArbeidsforhold>()
+        repository.leggTilNyBekreftelse(nyBekreftelse.fnr, nyBekreftelse.orgnr)
+    }
+}
+
+fun Route.oppdatereBekreftelse(repository: Repository) {
+    put("/bekreftelse/{id}") {
+
     }
 }
