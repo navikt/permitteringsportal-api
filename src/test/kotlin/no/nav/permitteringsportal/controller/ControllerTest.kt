@@ -2,6 +2,7 @@ package no.nav.permitteringsportal.controller
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.jackson.objectBody
+import com.github.kittinunf.fuel.jackson.responseObject
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
@@ -12,9 +13,11 @@ import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.permitteringsportal.startLokalApp
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.security.mock.oauth2.http.objectMapper
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.util.*
+import kotlin.test.assertEquals
 
 class ControllerTest {
 
@@ -36,23 +39,52 @@ class ControllerTest {
             val nyBekreftelse = BekreftelsePåArbeidsforhold("", "123456789", "123456789")
             val nyHendelse = BekreftelsePåArbeidsforholdHendelse("", "", "NY", 100, Date(), Date())
 
-            Fuel.post("http://localhost:8080/bekreftelse")
+            val (request1, response1, result1) = Fuel.post("http://localhost:8080/bekreftelse")
                 .medArbeidsgiverToken(mockOAuth2Server)
                 .objectBody(nyBekreftelse)
-                .response()
+                .responseString()
 
+            val uuid = result1.component1()
             // Få tak på id og legg til en hendelse
-            Fuel.put("http://localhost:8080/bekreftelse/1234")
+            Fuel.put("http://localhost:8080/bekreftelse/${uuid}")
                 .medArbeidsgiverToken(mockOAuth2Server)
                 .objectBody(nyHendelse)
                 .response()
 
             // Hent bekreftelse og verifiser at hendelse kommer med og har riktig data
-            val (_, response, _) = Fuel.get("http://localhost:8080/bekreftelse/1234")
+            val bekreftelsePåArbeidsforholdLagret = Fuel.get("http://localhost:8080/bekreftelse/${uuid}")
                 .medArbeidsgiverToken(mockOAuth2Server)
-                .response()
-            Assertions.assertThat(response.statusCode).isEqualTo(200)
-        }
+                .responseObject<BekreftelsePåArbeidsforhold>(mapper = objectMapper)
+                .third
+                .get()
 
+
+            println(bekreftelsePåArbeidsforholdLagret)
+            assertEquals(bekreftelsePåArbeidsforholdLagret.fnr, nyBekreftelse.fnr)
+            assertEquals(bekreftelsePåArbeidsforholdLagret.orgnr, nyBekreftelse.orgnr)
+
+        }
+    }
+
+    @Test
+    fun skal_legge_bekreftelse_på_topic_etter_innsendelse() {
+        // Legg til bekfreftelse
+
+        // Oppdater med skjema-data (hendelse)
+
+        // Send inn
+
+        // Assert at det legges riktig bekreftelse på topic
+        assert(false)
+    }
+
+    @Test
+    fun skal_finnes_oppgave_å_hente_etter_konsumsjon_av_ping() {
+        // Konsumere fra ping-topic
+
+        // Hent fra api
+
+        // Assert at det er riktig data
+        assert(false)
     }
 }
