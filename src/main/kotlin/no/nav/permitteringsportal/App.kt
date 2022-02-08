@@ -23,6 +23,7 @@ import no.nav.permitteringsportal.minsideklient.MinSideNotifikasjonerService
 import no.nav.permitteringsportal.minsideklient.getHttpClient
 import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
 import no.nav.permitteringsportal.utils.Cluster
+import no.nav.permitteringsportal.utils.Environment
 import no.nav.permitteringsportal.utils.log
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import no.nav.security.token.support.ktor.IssuerConfig
@@ -103,7 +104,7 @@ fun main() {
 
     //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
-    val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)
+    val minSideGraphQLKlient = MinSideGraphQLKlient(Environment.getUrlTilNotifikasjonIMiljo(), httpClient)
     val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
 
     log("main").info("Starter app i cluster: ${Cluster.current}")

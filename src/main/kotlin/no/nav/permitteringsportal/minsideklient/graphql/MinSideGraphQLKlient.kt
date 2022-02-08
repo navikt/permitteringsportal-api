@@ -25,10 +25,7 @@ class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient) {
                 lenke
             ));
             val resultat = client.execute(query);
-
         }
-
-
         return
     }
 }
