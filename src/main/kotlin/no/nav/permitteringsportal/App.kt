@@ -12,6 +12,7 @@ import io.ktor.serialization.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import leggTilBekreftelse
+import no.nav.permitteringsportal.altinn.AltinnService
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.database.Repository
@@ -29,6 +30,7 @@ import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
 import no.nav.security.token.support.ktor.tokenValidationSupport
+import oppdaterBekreftelse
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -46,7 +48,7 @@ class App(
     private val producer: Producer<String, BekreftelsePåArbeidsforhold>,
     private val bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService,
     private val minSideNotifikasjonerService: MinSideNotifikasjonerService,
-
+    private val altinnService: AltinnService
 ) : Closeable {
 
     private val repository = Repository(dataSource)
@@ -64,8 +66,9 @@ class App(
             authenticate {
                 hentOppgaver(repository)
                 sendInnBekreftelse(repository)
-                leggTilBekreftelse(repository)
+                leggTilBekreftelse(repository, altinnService)
                 hentBekreftelse(repository)
+                oppdaterBekreftelse(repository)
             }
 
             get("/internal/isAlive") { call.respond(HttpStatusCode.OK) }
@@ -101,6 +104,7 @@ fun main() {
     )
     //dette er mock
     val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer, emptyList())
+    val altinnService = AltinnService()
 
     //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
@@ -124,6 +128,7 @@ fun main() {
         consumer,
         producer,
         dagpengeMeldingService,
-        minSideNotifikasjonerService
+        minSideNotifikasjonerService,
+        altinnService
     ).start()
 }

@@ -2,7 +2,9 @@ package no.nav.permitteringsportal
 
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
+import no.nav.permitteringsportal.altinn.AltinnService
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
+import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
@@ -21,6 +23,8 @@ class KafkaTest {
         val mockProducer = mockProducer()
         val mockConsumer = mockConsumer()
         val mockOAuth2Server = MockOAuth2Server()
+        private val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
+        val altinnService = AltinnService()
 
         init {
             mockOAuth2Server.shutdown()
@@ -35,7 +39,7 @@ class KafkaTest {
 
     @Test
     fun `skal sende melding pa kafka`() {
-        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer).use {
+        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service, altinnService).use {
             val meldingerSendtPåKafka = mockProducer.history()
             assertThat(meldingerSendtPåKafka.size).isEqualTo(0)
         }

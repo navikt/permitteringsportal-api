@@ -13,13 +13,15 @@ const val orgnrColumn = "orgnr"
 data class BekreftelsePåArbeidsforhold(
     val id: String,
     val fnr: String,
-    val orgnr: String
+    val orgnr: String,
+    var hendelser: List<BekreftelsePåArbeidsforholdHendelse>
 )
 
 val toBekreftelsePåArbeidsforhold = { row: Row ->
     BekreftelsePåArbeidsforhold(
         row.string(idColumn),
         row.string(fnrColumn),
-        row.string(orgnrColumn)
+        row.string(orgnrColumn),
+        emptyList()
     )
 }

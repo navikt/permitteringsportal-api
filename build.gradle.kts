@@ -21,10 +21,11 @@ dependencies {
     val ktor_version = "1.6.4"
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
     implementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-core:1.6.4")
-    implementation("io.ktor:ktor-server-netty:1.6.4")
+    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
     testImplementation("io.ktor:ktor-client-mock:$ktor_version")
-    implementation("io.ktor:ktor-serialization:1.6.4")
+    implementation("io.ktor:ktor-serialization:$ktor_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 
     implementation("com.graphql-java:graphql-java:16.2")
     implementation("com.expediagroup:graphql-kotlin-ktor-client:5.2.0")
@@ -44,6 +45,8 @@ dependencies {
 
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-jackson:2.3.1")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
     // TODO: Endre til testImplementation når vi er kobla mot PostgreSQL i miljø
     implementation("com.h2database:h2:1.4.200")

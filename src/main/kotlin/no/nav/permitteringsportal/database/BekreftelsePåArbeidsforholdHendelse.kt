@@ -1,6 +1,12 @@
 package no.nav.permitteringsportal.database
 
+import kotlinx.datetime.toKotlinLocalDateTime
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import kotliquery.Row
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 const val bekreftelseHendelseTable = "bekreftelse_arbeidsforhold_hendelse"
@@ -11,13 +17,14 @@ const val stillingsprosentColumnHendelse = "stillingsprosent"
 const val startDatoColumnHendelse = "start_dato"
 const val sluttDatoColumnHendelse = "slutt_dato"
 
+@Serializable
 data class BekreftelsePåArbeidsforholdHendelse(
     val id: String,
     val bekreftelseId: String,
     val type: String,
     val stillingsprosent: Int,
-    val startDato: Date,
-    val sluttDato: Date
+    val startDato: kotlinx.datetime.LocalDateTime,
+    val sluttDato: kotlinx.datetime.LocalDateTime
 )
 
 val toBekreftelsePåArbeidsforholdHendelse = { row: Row ->
@@ -26,7 +33,7 @@ val toBekreftelsePåArbeidsforholdHendelse = { row: Row ->
         row.string(bekrefteldIdColumnHendelse),
         row.string(typeColumnHendelse),
         row.int(stillingsprosentColumnHendelse),
-        row.sqlDate(startDatoColumnHendelse),
-        row.sqlDate(sluttDatoColumnHendelse)
+        row.localDateTime(startDatoColumnHendelse).toKotlinLocalDateTime(),
+        row.localDateTime(sluttDatoColumnHendelse).toKotlinLocalDateTime()
     )
 }

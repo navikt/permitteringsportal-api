@@ -12,8 +12,8 @@ create table bekreftelse_arbeidsforhold_hendelse
     type varchar not null,
     sendt_inn_av varchar,
     stillingsprosent smallint not null,
-    start_dato date,
-    slutt_dato date
+    start_dato timestamp,
+    slutt_dato timestamp
 );
 
 create table data_fra_ansatt
