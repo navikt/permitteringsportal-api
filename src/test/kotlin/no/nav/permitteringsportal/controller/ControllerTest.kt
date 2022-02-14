@@ -7,12 +7,13 @@ import BekreftelsePåArbeidsforholdHendelseOutboundDTO
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.kittinunf.fuel.jackson.responseObject
+import io.mockk.mockk
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone.Companion.UTC
 import kotlinx.datetime.toLocalDateTime
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
-import no.nav.permitteringsportal.altinn.AltinnService
+import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
@@ -21,7 +22,6 @@ import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.permitteringsportal.startLokalApp
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.junit.Test
-import java.util.*
 import no.nav.security.mock.oauth2.http.objectMapper
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -34,7 +34,6 @@ class ControllerTest {
         val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
         private val mockOAuth2Server = MockOAuth2Server()
         private val dataSource = LokalDatabaseConfig().dataSource
-        private val altinnService = AltinnService()
         val mapper = jacksonObjectMapper().apply {
             registerModule(JavaTimeModule())
         }
@@ -49,7 +48,7 @@ class ControllerTest {
         val startDato = Clock.System.now().toLocalDateTime(UTC)
         val sluttDato = Clock.System.now().toLocalDateTime(UTC)
 
-        startLokalApp(dataSource, issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service, altinnService).use {
+        startLokalApp(dataSource, issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
             val nyBekreftelse = BekreftelsePåArbeidsforhold("", "123456789", "123456789", emptyList())
             val nyHendelse = BekreftelsePåArbeidsforholdHendelseOutboundDTO("", "", "NY", 100, startDato, sluttDato)
 

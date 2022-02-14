@@ -1,8 +1,9 @@
 package no.nav.permitteringsportal
 
+import io.mockk.mockk
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
-import no.nav.permitteringsportal.altinn.AltinnService
+import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.setup.issuerConfig
@@ -24,7 +25,6 @@ class KafkaTest {
         val mockConsumer = mockConsumer()
         val mockOAuth2Server = MockOAuth2Server()
         private val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
-        val altinnService = AltinnService()
 
         init {
             mockOAuth2Server.shutdown()
@@ -39,7 +39,7 @@ class KafkaTest {
 
     @Test
     fun `skal sende melding pa kafka`() {
-        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service, altinnService).use {
+        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
             val meldingerSendtPåKafka = mockProducer.history()
             assertThat(meldingerSendtPåKafka.size).isEqualTo(0)
         }

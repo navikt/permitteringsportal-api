@@ -7,6 +7,7 @@ import io.ktor.routing.*
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import no.nav.permitteringsportal.altinn.AltinnService
+import no.nav.permitteringsportal.altinn.MockAltinnService
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforholdHendelse
 import no.nav.permitteringsportal.database.Repository

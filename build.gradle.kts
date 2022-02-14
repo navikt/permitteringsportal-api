@@ -21,6 +21,7 @@ dependencies {
     val ktor_version = "1.6.4"
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
     implementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
+    implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     testImplementation("io.ktor:ktor-client-mock:$ktor_version")
@@ -41,6 +42,7 @@ dependencies {
     implementation("com.github.seratch:kotliquery:1.6.1")
 
     implementation("no.nav.security:token-validation-ktor:1.3.9")
+    implementation("no.nav.security:token-client-core:1.3.9")
     testImplementation("no.nav.security:mock-oauth2-server:0.4.0")
 
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
@@ -53,7 +55,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testImplementation("org.assertj:assertj-core:3.19.0")
-    testImplementation("io.mockk:mockk:1.10.5")
+    testImplementation("io.mockk:mockk:1.12.2")
 
 }
 

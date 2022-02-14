@@ -1,9 +1,12 @@
 package no.nav.permitteringsportal
 
 import com.zaxxer.hikari.HikariDataSource
+import io.mockk.mockk
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.altinn.AltinnService
+import no.nav.permitteringsportal.altinn.MockAltinnService
+import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.producer.Producer
@@ -23,7 +26,7 @@ fun startLokalApp(
     consumer: Consumer<String, DataFraAnsatt> = mockConsumer(),
     producer: Producer<String, BekreftelsePåArbeidsforhold> = mockProducer(),
     bekreftelsePåArbeidsforholdService: BekreftelsePåArbeidsforholdService = BekreftelsePåArbeidsforholdService(producer, emptyList()),
-    altinnService: AltinnService = AltinnService()
+    altinnService: AltinnService = mockk(relaxed = true)
 ): App {
     val httpClient = getHttpClient()
     val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)

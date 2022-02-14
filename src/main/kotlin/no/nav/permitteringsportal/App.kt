@@ -1,9 +1,15 @@
 package no.nav.permitteringsportal
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
 import hentBekreftelse
 import hentOppgaver
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.response.*
@@ -13,6 +19,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import leggTilBekreftelse
 import no.nav.permitteringsportal.altinn.AltinnService
+import no.nav.permitteringsportal.altinn.MockAltinnService
+import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.database.Repository
@@ -27,6 +35,9 @@ import no.nav.permitteringsportal.utils.Cluster
 import no.nav.permitteringsportal.utils.Environment
 import no.nav.permitteringsportal.utils.log
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
+import no.nav.security.token.support.client.core.ClientAuthenticationProperties
+import no.nav.security.token.support.client.core.ClientProperties
+import no.nav.security.token.support.client.core.OAuth2GrantType
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
 import no.nav.security.token.support.ktor.tokenValidationSupport
@@ -37,6 +48,7 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.Producer
 import sendInnBekreftelse
 import java.io.Closeable
+import java.net.URI
 import java.util.*
 import javax.sql.DataSource
 import kotlin.concurrent.thread
@@ -104,12 +116,41 @@ fun main() {
     )
     //dette er mock
     val dagpengeMeldingService = BekreftelsePåArbeidsforholdService(producer, emptyList())
-    val altinnService = AltinnService()
 
     //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
     val minSideGraphQLKlient = MinSideGraphQLKlient(Environment.getUrlTilNotifikasjonIMiljo(), httpClient)
     val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
+
+    // Token X
+    val authProperties = ClientAuthenticationProperties.builder()
+        .clientId("string med id")
+        .clientJwk("string med jwk")
+        .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+        .build()
+
+    val tokenExchangeProperties = ClientProperties.TokenExchangeProperties.builder()
+        .audience("dev-gcp:arbeidsgiver:altinn-rettigheter-proxy")
+        .build()
+
+    val clientProperties = ClientProperties.builder()
+        .tokenEndpointUrl(URI.create("https://tokendings.dev-gcp.nais.io/token"))
+        .grantType(OAuth2GrantType.TOKEN_EXCHANGE)
+        .tokenExchange(tokenExchangeProperties)
+        .authentication(authProperties)
+        .build()
+
+    val defaultHttpClient = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = JacksonSerializer {
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            }
+        }
+    }
+
+    val tokenExchangeClient = Oauth2Client(defaultHttpClient, "localhost:12345", authProperties)
+    val altinnService = AltinnService(tokenExchangeClient)
 
     log("main").info("Starter app i cluster: ${Cluster.current}")
 
