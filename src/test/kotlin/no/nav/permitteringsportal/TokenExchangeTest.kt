@@ -2,6 +2,7 @@ package no.nav.permitteringsportal
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.nimbusds.jwt.SignedJWT
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -15,9 +16,12 @@ import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
+import no.nav.security.token.support.core.jwt.JwtToken
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class TokenExchangeTest {
 
@@ -76,16 +80,16 @@ class TokenExchangeTest {
                     }
                 }
             }
-
             val oauth2Client = Oauth2Client(
                 defaultHttpClient,
                 mockOAuth2Server.tokenEndpointUrl("issuer1").toString(),
                 authProperties
             )
-
             val nyAccessToken = runBlocking { oauth2Client.exchangeToken(token.serialize(), "aud2") }
+            val jwt = SignedJWT.parse(nyAccessToken.accessToken)
+            val claimsSet = jwt.jwtClaimsSet
 
-            assertNotNull(nyAccessToken)
+            assertTrue(claimsSet.audience.contains("aud2"))
         }
     }
 }
