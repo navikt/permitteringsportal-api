@@ -1,17 +1,23 @@
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
+import io.ktor.http.auth.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import no.nav.permitteringsportal.altinn.AltinnService
-import no.nav.permitteringsportal.altinn.MockAltinnService
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforholdHendelse
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.utils.getFnrFraToken
+
+fun Route.hentOrganisasjoner(altinnService: AltinnService) {
+    get("/organisasjoner") {
+        altinnService.hentOrganisasjoner(this.context.getAccessToken())
+    }
+}
 
 fun Route.hentOppgaver(repository: Repository) {
     get("/oppgave") {
@@ -19,6 +25,7 @@ fun Route.hentOppgaver(repository: Repository) {
         // repository.hentOppgaver(orgnr)
     }
 }
+
 fun Route.sendInnBekreftelse(repository: Repository) {
     post("/oppgave") {
         call.respond(HttpStatusCode.Created)
@@ -44,7 +51,7 @@ fun Route.leggTilBekreftelse(repository: Repository, altinnService: AltinnServic
     post("/bekreftelse") {
         val nyBekreftelse = call.receive<BekreftelsePåArbeidsforhold>()
         val fnr = getFnrFraToken(call.authentication)
-        val altinnOrganisasjoner = fnr?.let { it -> altinnService.hentOrganisasjon(it, nyBekreftelse.orgnr) }
+        // val altinnOrganisasjoner = fnr?.let { it -> altinnService.hentOrganisasjon(this.context.getAccessToken(), it, nyBekreftelse.orgnr) }
 
         val uuid = repository.leggTilNyBekreftelse(nyBekreftelse.fnr, nyBekreftelse.orgnr)
         call.respond(uuid)
@@ -56,6 +63,14 @@ fun Route.oppdaterBekreftelse(repository: Repository) {
     put("/bekreftelse/{id}") {
 
     }
+}
+
+private fun ApplicationCall.getAccessToken(): String? {
+    val authorizationHeader = request.parseAuthorizationHeader()
+    if(authorizationHeader is HttpAuthHeader.Single && authorizationHeader.authScheme == "bearer") {
+        return authorizationHeader.blob
+    }
+    return null
 }
 
 @Serializable

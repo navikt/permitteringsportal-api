@@ -33,6 +33,7 @@ import no.nav.permitteringsportal.minsideklient.getHttpClient
 import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
 import no.nav.permitteringsportal.utils.Cluster
 import no.nav.permitteringsportal.utils.Environment
+import no.nav.permitteringsportal.utils.getDefaultHttpClient
 import no.nav.permitteringsportal.utils.log
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
@@ -140,17 +141,10 @@ fun main() {
         .authentication(authProperties)
         .build()
 
-    val defaultHttpClient = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = JacksonSerializer {
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            }
-        }
-    }
+    val defaultHttpClient = getDefaultHttpClient()
 
     val tokenExchangeClient = Oauth2Client(defaultHttpClient, "localhost:12345", authProperties)
-    val altinnService = AltinnService(tokenExchangeClient)
+    val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, "altinn-proxy-url")
 
     log("main").info("Starter app i cluster: ${Cluster.current}")
 

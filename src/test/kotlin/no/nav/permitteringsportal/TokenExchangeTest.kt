@@ -14,6 +14,7 @@ import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.setup.issuerConfig
+import no.nav.permitteringsportal.utils.getDefaultHttpClient
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
 import no.nav.security.token.support.core.jwt.JwtToken
@@ -72,14 +73,7 @@ class TokenExchangeTest {
         ).use {
             val token = mockOAuth2Server.issueToken("issuer1", "foo", "aud1")
 
-            val defaultHttpClient = HttpClient(CIO) {
-                install(JsonFeature) {
-                    serializer = JacksonSerializer {
-                        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                    }
-                }
-            }
+            val defaultHttpClient = getDefaultHttpClient()
             val oauth2Client = Oauth2Client(
                 defaultHttpClient,
                 mockOAuth2Server.tokenEndpointUrl("issuer1").toString(),
