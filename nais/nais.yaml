@@ -33,5 +33,5 @@ spec:
       rules:
         - application: altinn-rettigheter-proxy
           namespace: arbeidsgiver
-#  kafka:
-#    pool: nav-dev
+  kafka:
+    pool: nav-dev

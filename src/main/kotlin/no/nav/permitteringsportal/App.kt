@@ -119,7 +119,7 @@ fun main() {
 
     //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
-    val minSideGraphQLKlient = MinSideGraphQLKlient(Environment.getUrlTilNotifikasjonIMiljo(), httpClient)
+    val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo, httpClient)
     val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
 
     // Token X

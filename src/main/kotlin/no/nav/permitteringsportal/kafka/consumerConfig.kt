@@ -1,6 +1,6 @@
 package no.nav.permitteringsportal.kafka
 
-import no.nav.permitteringsportal.utils.Environment
+import no.nav.permitteringsportal.utils.environmentVariables
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SslConfigs
@@ -17,13 +17,13 @@ fun consumerConfig() = Properties().apply {
     put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java)
     put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java)
 
-    put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, Environment.get("KAFKA_BROKERS"))
+    put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, environmentVariables.kafkaBrokers)
 
     put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL")
     put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "")
-    put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, Environment.get("KAFKA_TRUSTSTORE_PATH"))
-    put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, Environment.get("KAFKA_CREDSTORE_PASSWORD"))
+    put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, environmentVariables.kafkaTruststorePath)
+    put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, environmentVariables.kafkaCredstorePassword)
     put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PKCS12")
-    put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, Environment.get("KAFKA_KEYSTORE_PATH"))
-    put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, Environment.get("KAFKA_CREDSTORE_PASSWORD"))
+    put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, environmentVariables.kafkaKeystorePath)
+    put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, environmentVariables.kafkaCredstorePassword)
 }
