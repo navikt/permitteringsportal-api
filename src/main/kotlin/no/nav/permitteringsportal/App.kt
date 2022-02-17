@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
 import hentBekreftelse
 import hentOppgaver
+import hentOrganisasjoner
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.client.*
@@ -31,10 +32,7 @@ import no.nav.permitteringsportal.kafka.producerConfig
 import no.nav.permitteringsportal.minsideklient.MinSideNotifikasjonerService
 import no.nav.permitteringsportal.minsideklient.getHttpClient
 import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
-import no.nav.permitteringsportal.utils.Cluster
-import no.nav.permitteringsportal.utils.Environment
-import no.nav.permitteringsportal.utils.getDefaultHttpClient
-import no.nav.permitteringsportal.utils.log
+import no.nav.permitteringsportal.utils.*
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
 import no.nav.security.token.support.client.core.ClientProperties
@@ -77,6 +75,7 @@ class App(
         }
         routing {
             authenticate {
+                hentOrganisasjoner(altinnService)
                 hentOppgaver(repository)
                 sendInnBekreftelse(repository)
                 leggTilBekreftelse(repository, altinnService)
@@ -125,26 +124,15 @@ fun main() {
 
     // Token X
     val authProperties = ClientAuthenticationProperties.builder()
-        .clientId("string med id")
-        .clientJwk("string med jwk")
+        .clientId(environmentVariables.tokenXClientId)
+        .clientJwk(environmentVariables.tokenXPrivateJWK)
         .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
-        .build()
-
-    val tokenExchangeProperties = ClientProperties.TokenExchangeProperties.builder()
-        .audience("dev-gcp:arbeidsgiver:altinn-rettigheter-proxy")
-        .build()
-
-    val clientProperties = ClientProperties.builder()
-        .tokenEndpointUrl(URI.create("https://tokendings.dev-gcp.nais.io/token"))
-        .grantType(OAuth2GrantType.TOKEN_EXCHANGE)
-        .tokenExchange(tokenExchangeProperties)
-        .authentication(authProperties)
         .build()
 
     val defaultHttpClient = getDefaultHttpClient()
 
-    val tokenExchangeClient = Oauth2Client(defaultHttpClient, "localhost:12345", authProperties)
-    val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, "altinn-proxy-url")
+    val tokenExchangeClient = Oauth2Client(defaultHttpClient, environmentVariables.tokenEndpointUrl, authProperties)
+    val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, environmentVariables.altinnProxyUrl)
 
     log("main").info("Starter app i cluster: ${Cluster.current}")
 

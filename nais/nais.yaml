@@ -29,5 +29,9 @@ spec:
     inbound:
       rules:
         - application: permitteringsportal
+    outbound:
+      rules:
+        - application: altinn-rettigheter-proxy
+          namespace: arbeidsgiver
 #  kafka:
 #    pool: nav-dev

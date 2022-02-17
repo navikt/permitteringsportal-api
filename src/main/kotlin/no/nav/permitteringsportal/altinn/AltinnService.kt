@@ -3,6 +3,7 @@ package no.nav.permitteringsportal.altinn
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import no.nav.permitteringsportal.utils.environmentVariables
 
 private const val ALTINN_ORG_PAGE_SIZE = 500
 
@@ -28,7 +29,7 @@ class AltinnService(
 
     suspend fun hentOrganisasjonerFraAltinn(token: String?, query: String): List<AltinnOrganisasjon> {
         token?.let {
-            val scopedAccessToken = tokenClient.exchangeToken(token, "altinn-proxy").accessToken
+            val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
 
             val url: String = altinnProxyUrl + "reportees/?ForceEIAuthentication" + query
 
@@ -40,7 +41,7 @@ class AltinnService(
                 val urlWithPagesizeAndOffset =
                     url + "&\$top=" + ALTINN_ORG_PAGE_SIZE + "&\$skip=" + (pageNumber - 1) * ALTINN_ORG_PAGE_SIZE
                 altinnOrganisasjoner = httpClient.get(urlWithPagesizeAndOffset) {
-                    header(HttpHeaders.Authorization, "Bearer ${scopedAccessToken}")
+                    header(HttpHeaders.Authorization, "Bearer $scopedAccessToken")
                 }
                 // Todo: Handle pages when more than 500 entities
                 hasMore = false
