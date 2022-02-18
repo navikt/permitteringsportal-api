@@ -46,6 +46,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.Producer
 import sendInnBekreftelse
+import sjekkInnlogget
 import java.io.Closeable
 import java.net.URI
 import java.util.*
@@ -75,6 +76,7 @@ class App(
         }
         routing {
             authenticate {
+                sjekkInnlogget()
                 hentOrganisasjoner(altinnService)
                 hentOppgaver(repository)
                 sendInnBekreftelse(repository)

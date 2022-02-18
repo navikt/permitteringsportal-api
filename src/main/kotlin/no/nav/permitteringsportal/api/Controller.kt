@@ -13,8 +13,13 @@ import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforholdHendelse
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.utils.getFnrFraToken
 
+fun Route.sjekkInnlogget() {
+    get("/api/sjekk-innlogget") {
+        call.respond(HttpStatusCode.OK)
+    }
+}
 fun Route.hentOrganisasjoner(altinnService: AltinnService) {
-    get("/organisasjoner") {
+    get("/api/organisasjoner") {
         altinnService.hentOrganisasjoner(this.context.getAccessToken())
     }
 }
