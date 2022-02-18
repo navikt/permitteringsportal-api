@@ -8,14 +8,10 @@ metadata:
 spec:
   image: {{ version }}
   port: 8080
-  ingresses:
-  {{#each ingress as |url|}}
-      - {{url}}
-  {{/each}}
   liveness:
-    path: /internal/isAlive
+    path: /permitteringsportal-api/internal/isAlive
   readiness:
-    path: /internal/isReady
+    path: /permitteringsportal-api/internal/isReady
   gcp:
     sqlInstances:
       - name: permitteringsportal-api

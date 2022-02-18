@@ -31,7 +31,7 @@ class AuthenticationTest {
     @Test
     fun `Skal ikke nå endepunkt uten token`() {
         startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
-            val (_, response, _) = Fuel.get("http://localhost:8080/api/sjekk-innlogget").response()
+            val (_, response, _) = Fuel.get("http://localhost:8080/permitteringsportal-api/api/sjekk-innlogget").response()
             assertThat(response.statusCode).isEqualTo(401)
         }
     }
@@ -40,7 +40,7 @@ class AuthenticationTest {
     fun `Skal nå endepunkt med token`() {
 
         startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
-            val (_, response, _) = Fuel.get("http://localhost:8080/api/sjekk-innlogget")
+            val (_, response, _) = Fuel.get("http://localhost:8080/permitteringsportal-api/api/sjekk-innlogget")
                 .medArbeidsgiverToken(mockOAuth2Server)
                 .response()
             assertThat(response.statusCode).isEqualTo(200)

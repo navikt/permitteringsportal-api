@@ -85,8 +85,8 @@ class App(
                 oppdaterBekreftelse(repository)
             }
 
-            get("/internal/isAlive") { call.respond(HttpStatusCode.OK) }
-            get("/internal/isReady") { call.respond(HttpStatusCode.OK) }
+            get("/permitteringsportal-api/internal/isAlive") { call.respond(HttpStatusCode.OK) }
+            get("/permitteringsportal-api/internal/isReady") { call.respond(HttpStatusCode.OK) }
 
         }
     }

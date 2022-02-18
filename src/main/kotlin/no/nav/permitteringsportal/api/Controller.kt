@@ -14,12 +14,12 @@ import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.utils.getFnrFraToken
 
 fun Route.sjekkInnlogget() {
-    get("/api/sjekk-innlogget") {
+    get("/permitteringsportal-api/api/sjekk-innlogget") {
         call.respond(HttpStatusCode.OK)
     }
 }
 fun Route.hentOrganisasjoner(altinnService: AltinnService) {
-    get("/api/organisasjoner") {
+    get("/permitteringsportal-api/api/organisasjoner") {
         altinnService.hentOrganisasjoner(this.context.getAccessToken())
     }
 }
