@@ -20,7 +20,7 @@ fun Route.sjekkInnlogget() {
 }
 fun Route.hentOrganisasjoner(altinnService: AltinnService) {
     get("/permitteringsportal-api/api/organisasjoner") {
-        altinnService.hentOrganisasjoner(this.context.getAccessToken())
+        call.respond(altinnService.hentOrganisasjoner(this.context.getAccessToken()))
     }
 }
 
