@@ -51,6 +51,7 @@ class AltinnService(
             }
             return altinnOrganisasjoner
         }
+        log.warn("Ingen access token i request, kan ikke hente ny token til altinn-proxy")
         return emptyList()
     }
 

@@ -12,6 +12,7 @@ import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforholdHendelse
 import no.nav.permitteringsportal.database.Repository
 import no.nav.permitteringsportal.utils.getFnrFraToken
+import no.nav.permitteringsportal.utils.log
 
 fun Route.sjekkInnlogget() {
     get("/permitteringsportal-api/api/sjekk-innlogget") {
@@ -72,7 +73,7 @@ fun Route.oppdaterBekreftelse(repository: Repository) {
 
 private fun ApplicationCall.getAccessToken(): String? {
     val authorizationHeader = request.parseAuthorizationHeader()
-    if(authorizationHeader is HttpAuthHeader.Single && authorizationHeader.authScheme == "bearer") {
+    if(authorizationHeader is HttpAuthHeader.Single && authorizationHeader.authScheme == "Bearer") {
         return authorizationHeader.blob
     }
     return null
