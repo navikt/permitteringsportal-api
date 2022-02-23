@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import no.nav.permitteringsportal.utils.environmentVariables
+import no.nav.permitteringsportal.utils.log
 
 private const val ALTINN_ORG_PAGE_SIZE = 500
 
@@ -28,6 +29,7 @@ class AltinnService(
     }
 
     suspend fun hentOrganisasjonerFraAltinn(token: String?, query: String): List<AltinnOrganisasjon> {
+        log.info("hentOrganisasjonerFraAltinn")
         token?.let {
             val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
 
