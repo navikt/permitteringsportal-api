@@ -1,5 +1,8 @@
 package no.nav.permitteringsportal.altinn
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AltinnOrganisasjon(
     val Name: String,
     val Type: String,
