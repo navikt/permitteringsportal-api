@@ -11,8 +11,10 @@ import no.nav.permitteringsportal.altinn.AltinnService
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforholdHendelse
 import no.nav.permitteringsportal.database.Repository
+import no.nav.permitteringsportal.minsideklient.MinSideNotifikasjonerService
 import no.nav.permitteringsportal.utils.getFnrFraToken
 import no.nav.permitteringsportal.utils.log
+import no.nav.permitteringsportal.utils.urlTilNotifikasjonIMiljo
 
 fun Route.sjekkInnlogget() {
     get("/permitteringsportal-api/api/sjekk-innlogget") {
@@ -32,10 +34,11 @@ fun Route.hentOppgaver(repository: Repository) {
     }
 }
 
-fun Route.sendInnBekreftelse(repository: Repository) {
+fun Route.sendInnBekreftelse(repository: Repository,minSideNotifikasjonerService: MinSideNotifikasjonerService) {
     post("/oppgave") {
         call.respond(HttpStatusCode.Created)
         repository.leggTilNyBekreftelse("fnr", "orgnr")
+        minSideNotifikasjonerService.sendBeskjed("99999999", urlTilNotifikasjonIMiljo,"eksternid")
     }
 }
 fun Route.hentBekreftelse(repository: Repository) {
