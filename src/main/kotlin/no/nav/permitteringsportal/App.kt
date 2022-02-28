@@ -79,7 +79,7 @@ class App(
                 sjekkInnlogget()
                 hentOrganisasjoner(altinnService)
                 hentOppgaver(repository)
-                sendInnBekreftelse(repository)
+                sendInnBekreftelse(repository,minSideNotifikasjonerService)
                 leggTilBekreftelse(repository, altinnService)
                 hentBekreftelse(repository)
                 oppdaterBekreftelse(repository)
