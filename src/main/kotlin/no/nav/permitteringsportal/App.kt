@@ -121,8 +121,7 @@ fun main() {
 
     //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
-    val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo, httpClient)
-    val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
+
 
     // Token X
     val authProperties = ClientAuthenticationProperties.builder()
@@ -136,7 +135,8 @@ fun main() {
     val tokenExchangeClient = Oauth2Client(defaultHttpClient, environmentVariables.tokenEndpointUrl, authProperties)
     val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, environmentVariables.altinnProxyUrl)
 
-    log("main").info("Starter app i cluster: ${Cluster.current}")
+    val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo,httpClient, tokenExchangeClient)
+    val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient, tokenExchangeClient)
 
     // TODO: Koble mot PostgreSQL i miljø når vi har landa litt mer detaljer på schema
     val databaseConfig = LokalDatabaseConfig() // DatabaseConfig()

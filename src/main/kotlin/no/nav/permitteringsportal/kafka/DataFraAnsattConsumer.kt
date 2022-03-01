@@ -28,7 +28,7 @@ class DataFraAnsattConsumer(
                 consumer.commitSync()
                 records.forEach{
                     repository.leggTilNyOppgave(it.value())
-                    minSideNotifikasjonerService.sendBeskjed(it.value().orgnr, "lenke til frontend", "ekstern id")
+                    //minSideNotifikasjonerService.sendBeskjed(it.value().orgnr, "lenke til frontend", "ekstern id", )
                 }
                 log.info("Committet offset ${records.last().offset()} til Kafka")
             }

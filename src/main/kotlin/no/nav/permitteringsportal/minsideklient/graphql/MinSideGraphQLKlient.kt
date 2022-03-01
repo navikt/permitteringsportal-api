@@ -3,29 +3,41 @@ package no.nav.permitteringsportal.minsideklient.graphql
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
+import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.graphql.`generated"`.OpprettNyBeskjed
+import no.nav.permitteringsportal.utils.environmentVariables
 import java.net.URL
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 
-class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient) {
-    fun opprettNyBeskjed(
+class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient, val tokenClient: Oauth2Client,) {
+    suspend fun opprettNyBeskjed(
         virksomhetsnummer: String,
         lenke: String,
-        eksternId: String
+        eksternId: String,
+        token: String?
     ) {
+        token?.let {
+            val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
 
-        val client = GraphQLKtorClient(
-            url = URL(endpoint),
-            httpClient = httpClient
-        )
+            val client = GraphQLKtorClient(
+                url = URL(endpoint),
+                httpClient = httpClient
+            )
 
-        runBlocking {
-            val query = OpprettNyBeskjed(variables = OpprettNyBeskjed.Variables(
-                virksomhetsnummer,
-                eksternId,
-                lenke
-            ));
-            val resultat = client.execute(query);
+            runBlocking {
+                val query = OpprettNyBeskjed(variables = OpprettNyBeskjed.Variables(
+                    virksomhetsnummer,
+                    eksternId,
+                    lenke
+                ));
+                val resultat = client.execute(query) {
+                    header(HttpHeaders.Authorization, "Bearer $scopedAccessToken")
+                };
+            }
         }
+
         return
     }
 }

@@ -1,12 +1,19 @@
 package no.nav.permitteringsportal.minsideklient
 
+import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
+import io.ktor.client.*
+import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
+import no.nav.permitteringsportal.utils.environmentVariables
+import java.net.URL
 
-class MinSideNotifikasjonerService(private val minSideGraphQLClient : MinSideGraphQLKlient) {
+class MinSideNotifikasjonerService(private val minSideGraphQLClient : MinSideGraphQLKlient, private val tokenClient: Oauth2Client) {
 
-    fun sendBeskjed(virksomhetsnummer: String,
+    suspend fun sendBeskjed(virksomhetsnummer: String,
                     lenke: String,
-                    eksternId: String) {
-        minSideGraphQLClient.opprettNyBeskjed(virksomhetsnummer, lenke, eksternId)
-    }
+                    eksternId: String, token: String?) {
+        token?.let {
+        val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
+        minSideGraphQLClient.opprettNyBeskjed(virksomhetsnummer, lenke, eksternId, scopedAccessToken )
+    }}
 }
