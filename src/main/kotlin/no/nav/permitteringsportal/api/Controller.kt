@@ -35,7 +35,7 @@ fun Route.hentOppgaver(repository: Repository) {
 }
 
 fun Route.sendInnBekreftelse(repository: Repository,minSideNotifikasjonerService: MinSideNotifikasjonerService) {
-    post("/send-bekreftelse") {
+    post("/permitteringsportal-api/api/send-bekreftelse") {
         call.respond(HttpStatusCode.Created)
         repository.leggTilNyBekreftelse("fnr", "orgnr")
         minSideNotifikasjonerService.sendBeskjed("99999999", urlTilNotifikasjonIMiljo,"eksternid")
