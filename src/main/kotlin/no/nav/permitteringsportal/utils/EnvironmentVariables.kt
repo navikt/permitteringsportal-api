@@ -31,8 +31,8 @@ val altinnRettigheterAudience = when(Cluster.current) {
 }
 
 val notifikasjonerScope = when(Cluster.current) {
-    Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:arbeidsgiver-notifikasjoner-plattform"
-    Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:arbeidsgiver-notifikasjoner-plattform"
+    Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:notifikasjon-produsent-api"
+    Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:notifikasjon-produsent-api"
 }
 
 val urlTilNotifikasjonIMiljo = when(Cluster.current) {

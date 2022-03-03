@@ -29,6 +29,9 @@ spec:
       rules:
         - application: altinn-rettigheter-proxy
           namespace: arbeidsgiver
+        - application: notifikasjon-produsent-api
+          namespace: arbeidsgiver
+
   azure:
     application:
       enabled: true
