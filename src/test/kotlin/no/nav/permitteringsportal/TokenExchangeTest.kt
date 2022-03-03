@@ -46,6 +46,11 @@ class TokenExchangeTest {
             .clientJwk(jwk)
             .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
             .build()
+        val azureAuthProperties = ClientAuthenticationProperties.builder()
+            .clientId("clientid")
+            .clientJwk(jwk)
+            .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+            .build()
         private val mockProducer = mockProducer()
         private val mockConsumer = mockConsumer()
         private val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
@@ -72,7 +77,7 @@ class TokenExchangeTest {
             val oauth2Client = Oauth2Client(
                 defaultHttpClient,
                 authProperties,
-                authProperties
+                azureAuthProperties
             )
             val nyAccessToken = runBlocking { oauth2Client.exchangeToken(token.serialize(), mockOAuth2Server.tokenEndpointUrl("issuer1").toString(),"aud2") }
             val jwt = SignedJWT.parse(nyAccessToken.accessToken)
@@ -81,4 +86,28 @@ class TokenExchangeTest {
             assertTrue(claimsSet.audience.contains("aud2"))
         }
     }
+
+     @Test
+     fun skal_hente_machine_to_machine_token_med_azure() {
+         startLokalApp(dataSource,
+             issuerConfig(mockOAuth2Server),
+             mockConsumer,
+             mockProducer,
+             service
+         ).use {
+             val token = mockOAuth2Server.issueToken("issuer1", "foo", "aud1")
+
+             val defaultHttpClient = getDefaultHttpClient()
+             val oauth2Client = Oauth2Client(
+                 defaultHttpClient,
+                 authProperties,
+                 azureAuthProperties
+             )
+             val nyAccessToken = runBlocking { oauth2Client.machine2machine(mockOAuth2Server.tokenEndpointUrl("issuer1").toString(),"aud2") }
+             val jwt = SignedJWT.parse(nyAccessToken.accessToken)
+             val claimsSet = jwt.jwtClaimsSet
+
+             assertTrue(claimsSet.audience.contains("aud2"))
+         }
+     }
 }
