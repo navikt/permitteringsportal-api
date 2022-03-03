@@ -13,6 +13,7 @@ import java.net.URI
 class Oauth2Client(
     private val httpClient: HttpClient,
     private val clientAuthProperties: ClientAuthenticationProperties,
+    private val azureAuthProperties: ClientAuthenticationProperties,
 ) {
     suspend fun exchangeToken(token: String, tokenEndpointUrl: String, audience: String): OAuth2AccessTokenResponse {
         val grant = GrantRequest.tokenExchange(token, audience)
@@ -27,7 +28,7 @@ class Oauth2Client(
         val grant = GrantRequest.machine2machine(scope)
         return httpClient.tokenRequest(
             tokenEndpointUrl,
-            clientAuthProperties = clientAuthProperties,
+            clientAuthProperties = azureAuthProperties,
             grantRequest = grant
         )
     }

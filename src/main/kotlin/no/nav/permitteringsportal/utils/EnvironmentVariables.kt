@@ -6,6 +6,8 @@ data class EnvironmentVariables(
     val tokenXClientId: String,
     val tokenXPrivateJWK: String,
     val azureADTokenEndpointUrl: String,
+    val azureJWK: String,
+    val azureClientId: String,
     val altinnRettigheterAudience: String,
     val urlTilNotifikasjonIMiljo: String,
     val notifikasjonerScope: String,
@@ -13,7 +15,9 @@ data class EnvironmentVariables(
     val kafkaTruststorePath: String,
     val kafkaCredstorePassword: String,
     val kafkaKeystorePath: String
-    )
+    ) {
+
+}
 
 val tokenXEndpointUrl = when(Cluster.current) {
     Cluster.DEV_GCP -> "https://tokendings.dev-gcp.nais.io/token"
@@ -46,6 +50,8 @@ val environmentVariables = EnvironmentVariables(
     System.getenv("TOKEN_X_CLIENT_ID"),
     System.getenv("TOKEN_X_PRIVATE_JWK"),
     System.getenv("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"),
+    System.getenv("AZURE_APP_CLIENT_ID"),
+    System.getenv("AZURE_APP_JWKS"),
     altinnRettigheterAudience,
     urlTilNotifikasjonIMiljo,
     notifikasjonerScope,

@@ -1,16 +1,11 @@
 package no.nav.permitteringsportal
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
 import hentBekreftelse
 import hentOppgaver
 import hentOrganisasjoner
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.response.*
@@ -20,7 +15,6 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import leggTilBekreftelse
 import no.nav.permitteringsportal.altinn.AltinnService
-import no.nav.permitteringsportal.altinn.MockAltinnService
 import no.nav.permitteringsportal.altinn.Oauth2Client
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
@@ -35,8 +29,6 @@ import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
 import no.nav.permitteringsportal.utils.*
 import no.nav.permitteringsvarsel.notifikasjon.kafka.DataFraAnsattConsumer
 import no.nav.security.token.support.client.core.ClientAuthenticationProperties
-import no.nav.security.token.support.client.core.ClientProperties
-import no.nav.security.token.support.client.core.OAuth2GrantType
 import no.nav.security.token.support.ktor.IssuerConfig
 import no.nav.security.token.support.ktor.TokenSupportConfig
 import no.nav.security.token.support.ktor.tokenValidationSupport
@@ -48,7 +40,6 @@ import org.apache.kafka.clients.producer.Producer
 import sendInnBekreftelse
 import sjekkInnlogget
 import java.io.Closeable
-import java.net.URI
 import java.util.*
 import javax.sql.DataSource
 import kotlin.concurrent.thread
@@ -130,9 +121,15 @@ fun main() {
         .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
         .build()
 
+    val azureAuthProperties = ClientAuthenticationProperties.builder()
+        .clientId(environmentVariables.azureClientId)
+        .clientJwk(environmentVariables.azureJWK)
+        .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+        .build()
+
     val defaultHttpClient = getDefaultHttpClient()
 
-    val tokenExchangeClient = Oauth2Client(defaultHttpClient, authProperties)
+    val tokenExchangeClient = Oauth2Client(defaultHttpClient, authProperties, azureAuthProperties)
     val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, environmentVariables.altinnProxyUrl)
 
     val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo,httpClient, tokenExchangeClient)
