@@ -52,11 +52,9 @@ data class GrantRequest(
             GrantRequest(
                 grantType = OAuth2GrantType.CLIENT_CREDENTIALS,
                 params = mapOf(
-                    OAuth2ParameterNames.CLIENT_ASSERTION_TYPE to "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
                     OAuth2ParameterNames.SCOPE to scope
                 )
             )
-
     }
 }
 
