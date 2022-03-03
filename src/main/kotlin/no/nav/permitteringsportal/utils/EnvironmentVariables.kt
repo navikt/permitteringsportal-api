@@ -45,7 +45,7 @@ val environmentVariables = EnvironmentVariables(
     tokenXEndpointUrl,
     System.getenv("TOKEN_X_CLIENT_ID"),
     System.getenv("TOKEN_X_PRIVATE_JWK"),
-    azureADTokenEndpointUrl,
+    System.getenv("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"),
     altinnRettigheterAudience,
     urlTilNotifikasjonIMiljo,
     notifikasjonerScope,
