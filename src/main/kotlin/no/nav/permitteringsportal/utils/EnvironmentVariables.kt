@@ -23,6 +23,11 @@ val altinnRettigheterAudience = when(Cluster.current) {
     Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
 }
 
+val notifikasjonerAudience = when(Cluster.current) {
+    Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:altinn-rettigheter-proxy"
+    Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
+}
+
 val urlTilNotifikasjonIMiljo = when(Cluster.current) {
     Cluster.DEV_GCP -> "https://ag-notifikasjon-produsent-api.dev.nav.no/api/graphql"
     Cluster.PROD_GCP -> "https://ag-notifikasjon-produsent-api.intern.nav.no/api/graphql"
