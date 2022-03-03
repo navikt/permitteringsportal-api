@@ -24,19 +24,14 @@ val tokenXEndpointUrl = when(Cluster.current) {
     Cluster.PROD_GCP -> "https://tokendings.prod-gcp.nais.io/token"
 }
 
-val azureADTokenEndpointUrl = when(Cluster.current) {
-    Cluster.DEV_GCP -> "https://tokendings.dev-gcp.nais.io/token"
-    Cluster.PROD_GCP -> "https://tokendings.prod-gcp.nais.io/token"
-}
-
 val altinnRettigheterAudience = when(Cluster.current) {
     Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:altinn-rettigheter-proxy"
     Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
 }
 
 val notifikasjonerScope = when(Cluster.current) {
-    Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:notifikasjon-produsent-api"
-    Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:notifikasjon-produsent-api"
+    Cluster.DEV_GCP -> "api://dev-gcp:arbeidsgiver:notifikasjon-produsent-api/.default"
+    Cluster.PROD_GCP -> "api://prod-gcp:arbeidsgiver:notifikasjon-produsent-api/.default"
 }
 
 val urlTilNotifikasjonIMiljo = when(Cluster.current) {
