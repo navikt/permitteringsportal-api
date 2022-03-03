@@ -12,11 +12,19 @@ import java.net.URI
 
 class Oauth2Client(
     private val httpClient: HttpClient,
-    private val tokenEndpointUrl: String,
     private val clientAuthProperties: ClientAuthenticationProperties,
 ) {
-    suspend fun exchangeToken(token: String, audience: String): OAuth2AccessTokenResponse {
+    suspend fun exchangeToken(token: String, tokenEndpointUrl: String, audience: String): OAuth2AccessTokenResponse {
         val grant = GrantRequest.tokenExchange(token, audience)
+        return httpClient.tokenRequest(
+            tokenEndpointUrl,
+            clientAuthProperties = clientAuthProperties,
+            grantRequest = grant
+        )
+    }
+
+    suspend fun machine2machine(tokenEndpointUrl: String, scope: String): OAuth2AccessTokenResponse {
+        val grant = GrantRequest.machine2machine(scope)
         return httpClient.tokenRequest(
             tokenEndpointUrl,
             clientAuthProperties = clientAuthProperties,
@@ -37,6 +45,15 @@ data class GrantRequest(
                     OAuth2ParameterNames.SUBJECT_TOKEN_TYPE to "urn:ietf:params:oauth:token-type:jwt",
                     OAuth2ParameterNames.SUBJECT_TOKEN to token,
                     OAuth2ParameterNames.AUDIENCE to audience
+                )
+            )
+
+        fun machine2machine(scope: String): GrantRequest =
+            GrantRequest(
+                grantType = OAuth2GrantType.CLIENT_CREDENTIALS,
+                params = mapOf(
+                    OAuth2ParameterNames.CLIENT_ASSERTION_TYPE to "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                    OAuth2ParameterNames.SCOPE to scope
                 )
             )
 

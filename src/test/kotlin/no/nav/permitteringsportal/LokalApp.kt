@@ -29,8 +29,8 @@ fun startLokalApp(
     altinnService: AltinnService = mockk(relaxed = true)
 ): App {
     val httpClient = getHttpClient()
-    val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient)
-    val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient)
+    val minSideGraphQLKlient = MinSideGraphQLKlient("localhost", httpClient, mockk(relaxed = true))
+    val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient, mockk(relaxed = true))
     val app = App(dataSource = LokalDatabaseConfig().dataSource,
         issuerConfig ,consumer, producer, bekreftelsePåArbeidsforholdService, minSideNotifikasjonerService, altinnService)
     app.start()

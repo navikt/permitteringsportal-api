@@ -2,18 +2,25 @@ package no.nav.permitteringsportal.utils
 
 data class EnvironmentVariables(
     val altinnProxyUrl: String,
-    val tokenEndpointUrl: String,
+    val tokenXEndpointUrl: String,
     val tokenXClientId: String,
     val tokenXPrivateJWK: String,
+    val azureADTokenEndpointUrl: String,
     val altinnRettigheterAudience: String,
     val urlTilNotifikasjonIMiljo: String,
+    val notifikasjonerScope: String,
     val kafkaBrokers: String,
     val kafkaTruststorePath: String,
     val kafkaCredstorePassword: String,
     val kafkaKeystorePath: String
     )
 
-val tokenEndpointUrl = when(Cluster.current) {
+val tokenXEndpointUrl = when(Cluster.current) {
+    Cluster.DEV_GCP -> "https://tokendings.dev-gcp.nais.io/token"
+    Cluster.PROD_GCP -> "https://tokendings.prod-gcp.nais.io/token"
+}
+
+val azureADTokenEndpointUrl = when(Cluster.current) {
     Cluster.DEV_GCP -> "https://tokendings.dev-gcp.nais.io/token"
     Cluster.PROD_GCP -> "https://tokendings.prod-gcp.nais.io/token"
 }
@@ -23,9 +30,9 @@ val altinnRettigheterAudience = when(Cluster.current) {
     Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
 }
 
-val notifikasjonerAudience = when(Cluster.current) {
-    Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:altinn-rettigheter-proxy"
-    Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:altinn-rettigheter-proxy"
+val notifikasjonerScope = when(Cluster.current) {
+    Cluster.DEV_GCP -> "dev-gcp:arbeidsgiver:arbeidsgiver-notifikasjoner-plattform"
+    Cluster.PROD_GCP -> "prod-gcp:arbeidsgiver:arbeidsgiver-notifikasjoner-plattform"
 }
 
 val urlTilNotifikasjonIMiljo = when(Cluster.current) {
@@ -35,11 +42,13 @@ val urlTilNotifikasjonIMiljo = when(Cluster.current) {
 
 val environmentVariables = EnvironmentVariables(
     "http://altinn-rettigheter-proxy.arbeidsgiver/altinn-rettigheter-proxy/ekstern/altinn/api/serviceowner/",
-    tokenEndpointUrl,
+    tokenXEndpointUrl,
     System.getenv("TOKEN_X_CLIENT_ID"),
     System.getenv("TOKEN_X_PRIVATE_JWK"),
+    azureADTokenEndpointUrl,
     altinnRettigheterAudience,
     urlTilNotifikasjonIMiljo,
+    notifikasjonerScope,
     System.getenv("KAFKA_BROKERS"),
     System.getenv("KAFKA_TRUSTSTORE_PATH"),
     System.getenv("KAFKA_CREDSTORE_PASSWORD"),

@@ -132,7 +132,7 @@ fun main() {
 
     val defaultHttpClient = getDefaultHttpClient()
 
-    val tokenExchangeClient = Oauth2Client(defaultHttpClient, environmentVariables.tokenEndpointUrl, authProperties)
+    val tokenExchangeClient = Oauth2Client(defaultHttpClient, authProperties)
     val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, environmentVariables.altinnProxyUrl)
 
     val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo,httpClient, tokenExchangeClient)

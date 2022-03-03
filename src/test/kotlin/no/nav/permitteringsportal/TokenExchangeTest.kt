@@ -76,10 +76,9 @@ class TokenExchangeTest {
             val defaultHttpClient = getDefaultHttpClient()
             val oauth2Client = Oauth2Client(
                 defaultHttpClient,
-                mockOAuth2Server.tokenEndpointUrl("issuer1").toString(),
                 authProperties
             )
-            val nyAccessToken = runBlocking { oauth2Client.exchangeToken(token.serialize(), "aud2") }
+            val nyAccessToken = runBlocking { oauth2Client.exchangeToken(token.serialize(), mockOAuth2Server.tokenEndpointUrl("issuer1").toString(),"aud2") }
             val jwt = SignedJWT.parse(nyAccessToken.accessToken)
             val claimsSet = jwt.jwtClaimsSet
 

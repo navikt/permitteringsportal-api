@@ -31,7 +31,7 @@ class AltinnService(
     suspend fun hentOrganisasjonerFraAltinn(token: String?, query: String): List<AltinnOrganisasjon> {
         log.info("hentOrganisasjonerFraAltinn")
         token?.let {
-            val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
+            val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.tokenXEndpointUrl, environmentVariables.altinnRettigheterAudience).accessToken
 
             val url: String = altinnProxyUrl + "reportees/?ForceEIAuthentication" + query
 

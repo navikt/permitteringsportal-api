@@ -13,7 +13,7 @@ class MinSideNotifikasjonerService(private val minSideGraphQLClient : MinSideGra
                     lenke: String,
                     eksternId: String, token: String?) {
         token?.let {
-        val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
+        val scopedAccessToken = tokenClient.machine2machine(environmentVariables.azureADTokenEndpointUrl, environmentVariables.notifikasjonerScope).accessToken
         minSideGraphQLClient.opprettNyBeskjed(virksomhetsnummer, lenke, eksternId, scopedAccessToken )
     }}
 }

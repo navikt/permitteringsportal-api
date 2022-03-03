@@ -19,7 +19,7 @@ class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient, val
         token: String?
     ) {
         token?.let {
-            val scopedAccessToken = tokenClient.exchangeToken(token, environmentVariables.altinnRettigheterAudience).accessToken
+            val scopedAccessToken = tokenClient.machine2machine(environmentVariables.azureADTokenEndpointUrl, environmentVariables.notifikasjonerScope).accessToken
 
             val client = GraphQLKtorClient(
                 url = URL(endpoint),
