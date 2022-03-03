@@ -16,9 +16,8 @@ class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient, val
         virksomhetsnummer: String,
         lenke: String,
         eksternId: String,
-        token: String?
     ) {
-        token?.let {
+
             val scopedAccessToken = tokenClient.machine2machine(environmentVariables.azureADTokenEndpointUrl, environmentVariables.notifikasjonerScope).accessToken
 
             val client = GraphQLKtorClient(
@@ -36,7 +35,7 @@ class MinSideGraphQLKlient(val endpoint: String, val httpClient: HttpClient, val
                     header(HttpHeaders.Authorization, "Bearer $scopedAccessToken")
                 };
             }
-        }
+
 
         return
     }

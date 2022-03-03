@@ -12,8 +12,7 @@ class MinSideNotifikasjonerService(private val minSideGraphQLClient : MinSideGra
     suspend fun sendBeskjed(virksomhetsnummer: String,
                     lenke: String,
                     eksternId: String, token: String?) {
-        token?.let {
-        val scopedAccessToken = tokenClient.machine2machine(environmentVariables.azureADTokenEndpointUrl, environmentVariables.notifikasjonerScope).accessToken
-        minSideGraphQLClient.opprettNyBeskjed(virksomhetsnummer, lenke, eksternId, scopedAccessToken )
-    }}
+
+        minSideGraphQLClient.opprettNyBeskjed(virksomhetsnummer, lenke, eksternId )
+    }
 }

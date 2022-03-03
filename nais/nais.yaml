@@ -29,5 +29,8 @@ spec:
       rules:
         - application: altinn-rettigheter-proxy
           namespace: arbeidsgiver
+  azure:
+    application:
+      enabled: true
   kafka:
     pool: nav-dev
