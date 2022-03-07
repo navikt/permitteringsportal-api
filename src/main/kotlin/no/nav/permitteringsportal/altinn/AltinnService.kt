@@ -3,6 +3,7 @@ package no.nav.permitteringsportal.altinn
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.utils.environmentVariables
 import no.nav.permitteringsportal.utils.log
 

@@ -1,4 +1,4 @@
-package no.nav.permitteringsportal.altinn
+package no.nav.permitteringsportal.auth
 
 import io.ktor.client.*
 import io.ktor.client.request.forms.*

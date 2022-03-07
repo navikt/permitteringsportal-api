@@ -2,7 +2,7 @@ package no.nav.permitteringsportal.minsideklient
 
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import io.ktor.client.*
-import no.nav.permitteringsportal.altinn.Oauth2Client
+import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.minsideklient.graphql.MinSideGraphQLKlient
 import no.nav.permitteringsportal.utils.environmentVariables
 import java.net.URL

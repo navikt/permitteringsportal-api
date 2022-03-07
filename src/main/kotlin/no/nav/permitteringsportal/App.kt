@@ -15,7 +15,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import leggTilBekreftelse
 import no.nav.permitteringsportal.altinn.AltinnService
-import no.nav.permitteringsportal.altinn.Oauth2Client
+import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.database.Repository

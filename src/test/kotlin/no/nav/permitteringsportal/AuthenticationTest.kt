@@ -4,7 +4,7 @@ import com.github.kittinunf.fuel.Fuel
 import io.mockk.mockk
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
-import no.nav.permitteringsportal.altinn.Oauth2Client
+import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.setup.issuerConfig

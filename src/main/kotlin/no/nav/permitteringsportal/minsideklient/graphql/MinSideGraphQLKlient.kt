@@ -3,7 +3,7 @@ package no.nav.permitteringsportal.minsideklient.graphql
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
-import no.nav.permitteringsportal.altinn.Oauth2Client
+import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.graphql.`generated"`.OpprettNyBeskjed
 import no.nav.permitteringsportal.utils.environmentVariables
 import java.net.URL
