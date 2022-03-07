@@ -7,13 +7,11 @@ import BekreftelsePåArbeidsforholdHendelseOutboundDTO
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.kittinunf.fuel.jackson.responseObject
-import io.mockk.mockk
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone.Companion.UTC
 import kotlinx.datetime.toLocalDateTime
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
-import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService

@@ -7,7 +7,6 @@ import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.graphql.`generated"`.OpprettNyBeskjed
 import no.nav.permitteringsportal.utils.environmentVariables
 import java.net.URL
-import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 

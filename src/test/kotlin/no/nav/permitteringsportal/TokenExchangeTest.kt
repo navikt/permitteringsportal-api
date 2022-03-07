@@ -2,9 +2,6 @@ package no.nav.permitteringsportal
 
 import com.nimbusds.jwt.SignedJWT
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
 import kotlinx.coroutines.runBlocking
 import no.nav.oppsett.mockConsumer
 import no.nav.oppsett.mockProducer
