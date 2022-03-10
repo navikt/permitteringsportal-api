@@ -10,11 +10,8 @@ import com.github.kittinunf.fuel.jackson.responseObject
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone.Companion.UTC
 import kotlinx.datetime.toLocalDateTime
-import no.nav.oppsett.mockConsumer
-import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.database.BekreftelsePåArbeidsforhold
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
-import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
 import no.nav.permitteringsportal.startLokalApp
@@ -27,9 +24,6 @@ import kotlin.test.assertNotNull
 class ControllerTest {
 
     companion object {
-        val mockProducer = mockProducer()
-        val mockConsumer = mockConsumer()
-        val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
         private val mockOAuth2Server = MockOAuth2Server()
         private val dataSource = LokalDatabaseConfig().dataSource
         val mapper = jacksonObjectMapper().apply {
@@ -46,7 +40,7 @@ class ControllerTest {
         val startDato = Clock.System.now().toLocalDateTime(UTC)
         val sluttDato = Clock.System.now().toLocalDateTime(UTC)
 
-        startLokalApp(dataSource, issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
+        startLokalApp(dataSource, issuerConfig(mockOAuth2Server)).use {
             val nyBekreftelse = BekreftelsePåArbeidsforhold("", "123456789", "123456789", emptyList())
             val nyHendelse = BekreftelsePåArbeidsforholdHendelseOutboundDTO("", "", "NY", 100, startDato, sluttDato)
 

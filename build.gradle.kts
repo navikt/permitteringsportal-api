@@ -32,9 +32,6 @@ dependencies {
     implementation("com.graphql-java:graphql-java:16.2")
     implementation("com.expediagroup:graphql-kotlin-ktor-client:5.2.0")
 
-    implementation("org.apache.kafka:kafka-clients:2.7.0")
-    implementation("io.confluent:kafka-avro-serializer:6.0.1")
-
     implementation("ch.qos.logback:logback-classic:1.2.6")
     implementation("net.logstash.logback:logstash-logback-encoder:6.6")
 

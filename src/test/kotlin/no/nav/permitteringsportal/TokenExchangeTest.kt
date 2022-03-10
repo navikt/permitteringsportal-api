@@ -3,11 +3,8 @@ package no.nav.permitteringsportal
 import com.nimbusds.jwt.SignedJWT
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod
 import kotlinx.coroutines.runBlocking
-import no.nav.oppsett.mockConsumer
-import no.nav.oppsett.mockProducer
 import no.nav.permitteringsportal.auth.Oauth2Client
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
-import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.permitteringsportal.utils.getDefaultHttpClient
 import no.nav.security.mock.oauth2.MockOAuth2Server
@@ -48,9 +45,6 @@ class TokenExchangeTest {
             .clientJwk(jwk)
             .clientAuthMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
             .build()
-        private val mockProducer = mockProducer()
-        private val mockConsumer = mockConsumer()
-        private val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
         private val mockOAuth2Server = MockOAuth2Server()
         private val dataSource = LokalDatabaseConfig().dataSource
 
@@ -62,12 +56,7 @@ class TokenExchangeTest {
 
     @Test
     fun skal_hente_ny_access_token_med_riktig_scope_og_audience() {
-        startLokalApp(dataSource,
-            issuerConfig(mockOAuth2Server),
-            mockConsumer,
-            mockProducer,
-            service
-        ).use {
+        startLokalApp(dataSource, issuerConfig(mockOAuth2Server)).use {
             val token = mockOAuth2Server.issueToken("issuer1", "foo", "aud1")
 
             val defaultHttpClient = getDefaultHttpClient()
@@ -86,12 +75,7 @@ class TokenExchangeTest {
 
      @Test
      fun skal_hente_machine_to_machine_token_med_azure() {
-         startLokalApp(dataSource,
-             issuerConfig(mockOAuth2Server),
-             mockConsumer,
-             mockProducer,
-             service
-         ).use {
+         startLokalApp(dataSource, issuerConfig(mockOAuth2Server)).use {
              val token = mockOAuth2Server.issueToken("issuer1", "foo", "aud1")
 
              val defaultHttpClient = getDefaultHttpClient()

@@ -1,9 +1,6 @@
 package no.nav.permitteringsportal
 
 import com.github.kittinunf.fuel.Fuel
-import no.nav.oppsett.mockConsumer
-import no.nav.oppsett.mockProducer
-import no.nav.permitteringsportal.kafka.BekreftelsePåArbeidsforholdService
 import no.nav.permitteringsportal.database.LokalDatabaseConfig
 import no.nav.permitteringsportal.setup.issuerConfig
 import no.nav.permitteringsportal.setup.medArbeidsgiverToken
@@ -14,10 +11,6 @@ import org.junit.Test
 class AuthenticationTest {
 
     companion object {
-
-        private val mockProducer = mockProducer()
-        private val mockConsumer = mockConsumer()
-        private val service = BekreftelsePåArbeidsforholdService(mockProducer, emptyList())
         private val mockOAuth2Server = MockOAuth2Server()
         private val dataSource = LokalDatabaseConfig().dataSource
         init {
@@ -28,7 +21,7 @@ class AuthenticationTest {
 
     @Test
     fun `Skal ikke nå endepunkt uten token`() {
-        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
+        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server)).use {
             val (_, response, _) = Fuel.get("http://localhost:8080/permitteringsportal-api/api/sjekk-innlogget").response()
             assertThat(response.statusCode).isEqualTo(401)
         }
@@ -37,7 +30,7 @@ class AuthenticationTest {
     @Test
     fun `Skal nå endepunkt med token`() {
 
-        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server), mockConsumer, mockProducer, service).use {
+        startLokalApp(dataSource, issuerConfig = issuerConfig(mockOAuth2Server)).use {
             val (_, response, _) = Fuel.get("http://localhost:8080/permitteringsportal-api/api/sjekk-innlogget")
                 .medArbeidsgiverToken(mockOAuth2Server)
                 .response()

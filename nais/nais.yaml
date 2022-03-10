@@ -35,5 +35,3 @@ spec:
   azure:
     application:
       enabled: true
-  kafka:
-    pool: nav-dev

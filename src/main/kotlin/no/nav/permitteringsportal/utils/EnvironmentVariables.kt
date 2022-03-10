@@ -11,10 +11,6 @@ data class EnvironmentVariables(
     val altinnRettigheterAudience: String,
     val urlTilNotifikasjonIMiljo: String,
     val notifikasjonerScope: String,
-    val kafkaBrokers: String,
-    val kafkaTruststorePath: String,
-    val kafkaCredstorePassword: String,
-    val kafkaKeystorePath: String
     ) {
 
 }
@@ -49,9 +45,5 @@ val environmentVariables = EnvironmentVariables(
     System.getenv("AZURE_APP_JWK"),
     altinnRettigheterAudience,
     urlTilNotifikasjonIMiljo,
-    notifikasjonerScope,
-    System.getenv("KAFKA_BROKERS"),
-    System.getenv("KAFKA_TRUSTSTORE_PATH"),
-    System.getenv("KAFKA_CREDSTORE_PASSWORD"),
-    System.getenv("KAFKA_KEYSTORE_PATH")
+    notifikasjonerScope
 )
