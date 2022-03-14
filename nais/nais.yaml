@@ -30,7 +30,7 @@ spec:
         - application: altinn-rettigheter-proxy
           namespace: arbeidsgiver
         - application: notifikasjon-produsent-api
-          namespace: arbeidsgiver
+          namespace: fager
 
   azure:
     application:
