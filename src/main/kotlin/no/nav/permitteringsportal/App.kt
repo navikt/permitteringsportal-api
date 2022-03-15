@@ -31,7 +31,6 @@ import oppdaterBekreftelse
 import sendInnBekreftelse
 import sjekkInnlogget
 import java.io.Closeable
-import java.util.*
 import javax.sql.DataSource
 
 class App(
@@ -78,12 +77,6 @@ class App(
 }
 
 fun main() {
-    //har ikke implementert database og mottak av foresporsler enda.
-    val uuid: UUID = UUID.randomUUID()
-    val dataFraAnsatt = DataFraAnsatt(
-        uuid, "hello",
-        "123456678"
-    )
     //hardkodet for lokal kjoring
     val httpClient = getHttpClient()
 
@@ -105,14 +98,14 @@ fun main() {
     val tokenExchangeClient = Oauth2Client(defaultHttpClient, authProperties, azureAuthProperties)
     val altinnService = AltinnService(tokenExchangeClient, defaultHttpClient, environmentVariables.altinnProxyUrl)
 
-    val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo,httpClient, tokenExchangeClient)
+    val minSideGraphQLKlient = MinSideGraphQLKlient(environmentVariables.urlTilNotifikasjonIMiljo, defaultHttpClient, tokenExchangeClient)
     val minSideNotifikasjonerService = MinSideNotifikasjonerService(minSideGraphQLKlient, tokenExchangeClient)
 
     // TODO: Koble mot PostgreSQL i miljø når vi har landa litt mer detaljer på schema
     val databaseConfig = LokalDatabaseConfig() // DatabaseConfig()
 
     val issuerConfig = IssuerConfig(
-        name = "arbeidsgiver",
+        name = "tokenx",
         discoveryUrl = System.getenv("TOKEN_X_WELL_KNOWN_URL"),
         acceptedAudience = listOf(System.getenv("TOKEN_X_CLIENT_ID"))
     )
